@@ -84,7 +84,7 @@ class PlayButton extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     const justStartedPlaying = !this.props.active && nextProps.active;
     const justStoppedPlaying = this.props.active && !nextProps.active;
-    const newAudioClip = this.state.url !== nextProps.audio;
+    // const newAudioClip = this.state.url !== nextProps.audio;
 
     // console.log("stateactive  " + this.state.active);
     // console.log("propsactive  " + this.props.active);

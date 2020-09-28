@@ -158,7 +158,7 @@ class EndPage extends React.Component {
   saveData() {
     var qnTime = Math.round(performance.now()) - this.state.quizTime;
 
-    var soundVol = this.state.soundArray[this.state.qnNum - 1];
+    var soundVol = this.state.sounds[this.state.qnNum - 1];
 
     let quizbehaviour = {
       userID: this.state.userID,

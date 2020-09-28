@@ -6,7 +6,6 @@ import styles from "./style/taskStyle.module.css";
 import Tone from "react-tone";
 
 import * as FreqSlider from "./FreqSlider.js";
-import PlayButton from "./PlayButton";
 
 import Play from "./Play";
 import Pause from "./Pause";
@@ -221,7 +220,7 @@ class EndPage extends React.Component {
   }
 
   saveQuizData() {
-    var fileID = this.state.fileID;
+    // var fileID = this.state.fileID;
     var qnTime = Math.round(performance.now()) - this.state.quizTime;
     var freqThres = this.state.freqThres;
     var qnNum = this.state.qnNum;

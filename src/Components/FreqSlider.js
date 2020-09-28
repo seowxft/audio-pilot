@@ -10,7 +10,7 @@ import styles from "./style/taskStyle.module.css";
 //   return Math.round(Math.random() * (max - min) + min);
 // }
 
-var initialFreq = 800;
+// var initialFreq = 800;
 var maxFreq = 24000;
 
 export const FreqSlider = ({ callBackValue, initialValue }) => {
