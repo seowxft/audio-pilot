@@ -1,0 +1,66 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  margin: 50px;
+  color: black;
+  font-size: 18px;
+  /* font-family: "Comic Sans MS", "Comic Sans", cursive; */
+}
+
+.quiz {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  margin: 40px;
+  color: black;
+  font-size: 18px;
+  /* font-family: "Comic Sans MS", "Comic Sans", cursive; */
+}
+
+.shortSlider {
+  width: 550px;
+  margin: 0 auto;
+}
+
+Button.clc {
+  border-color: #ffffff;
+}
+
+Button.black {
+  background-color: #000000;
+  border-color: #ffffff;
+}
+
+span.center {
+  display: table;
+  margin: 0 auto;
+  font-size: 25px;
+}
+
+span.playTri {
+  display: block;
+  width: 50px;
+  height: 100%;
+}
+
+span.centerTwo {
+  display: table;
+  margin: 0 auto;
+}
+
+Button:focus,
+Button:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
