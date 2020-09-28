@@ -351,7 +351,7 @@ class HeadphoneCheck extends React.Component {
   }
 
   nextQn() {
-    qnNum = qnNum + 1;
+    var qnNum = this.state.qnNum + 1;
 
     this.setState({
       qnNum: qnNum,
