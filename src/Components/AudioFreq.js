@@ -5,7 +5,8 @@ import styles from "./style/taskStyle.module.css";
 
 import Tone from "react-tone";
 
-import * as FreqSlider from "./FreqSlider.js";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
 import Play from "./Play";
 import Pause from "./Pause";
@@ -18,7 +19,7 @@ class EndPage extends React.Component {
     const volume = this.props.location.state.volume;
     var currentDate = new Date();
 
-    var adjvolume = 0.8 * volume;
+    var adjvolume = 0.5 * volume;
 
     console.log(userID);
     console.log(volume);
@@ -86,20 +87,32 @@ class EndPage extends React.Component {
     });
   }
 
-  callbackFreq(callBackValue) {
-    //on a scale between 1-100, between hearing range of 800 to 20000
-    var sliderFreq = parseInt(callBackValue);
-    this.setState({ sliderFreq: sliderFreq });
-
-    if (this.state.sliderFreq !== this.state.sliderFreqDefault) {
-      this.setState({ btnDisNext: false });
-    }
-  }
+  // callbackFreq(callBackValue) {
+  //   //on a scale between 1-100, between hearing range of 800 to 20000
+  //   var sliderFreq = parseInt(callBackValue);
+  //   this.setState({ sliderFreq: sliderFreq });
+  //
+  //   console.log(sliderFreq);
+  //   if (this.state.sliderFreq !== this.state.sliderFreqDefault) {
+  //     this.setState({ btnDisNext: false });
+  //   }
+  // }
 
   handleClick = () => {
     if (!this.iosAudioContextUnlocked) this.playEmptyBuffer();
 
     this.setState({ isTonePlaying: true });
+  };
+
+  onSliderChange = (value) => {
+    console.log(value);
+    this.setState({
+      sliderFreq: value,
+    });
+
+    if (this.state.sliderFreq !== this.state.sliderFreqDefault) {
+      this.setState({ btnDisNext: false });
+    }
   };
 
   ratingTask(qnNum) {
@@ -152,6 +165,8 @@ class EndPage extends React.Component {
           <br />
           Using the slider below, adjust it until you can only{" "}
           <strong>just</strong> hear the tone comfortably.
+          <br />
+          You can play the tone as many times as you like.
         </p>
       </div>
     );
@@ -178,12 +193,26 @@ class EndPage extends React.Component {
           <div>
             {question_text1}
             {question_text3}
-            <FreqSlider.FreqSlider
-              callBackValue={this.callbackFreq.bind(this)}
-              initialValue={this.state.sliderFreqDefault}
-            />
+            <div className={styles.shortSlider}>
+              <Slider
+                defaultValue={this.state.sliderFreqDefault}
+                value={this.state.sliderFreq}
+                trackStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
+                handleStyle={{
+                  borderColor: "#00BFFF",
+                  height: 25,
+                  width: 25,
+                  marginLeft: 0,
+                  marginTop: -9,
+                  backgroundColor: "#00BFFF",
+                }}
+                railStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
+                min={this.state.sliderFreqDefault}
+                max={24000}
+                onChange={this.onSliderChange.bind(this)}
+              />
+            </div>
             <br />
-
             {question_text4}
           </div>
         );
@@ -192,11 +221,27 @@ class EndPage extends React.Component {
           <div>
             {question_text2}
             {question_text3}
-            <FreqSlider.FreqSlider2
-              callBackValue={this.callbackFreq.bind(this)}
-              initialValue={this.state.sliderFreqDefault}
-            />
             <br />
+            <div className={styles.shortSlider}>
+              <Slider
+                defaultValue={this.state.sliderFreqDefault - 3000}
+                value={this.state.sliderFreq}
+                trackStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
+                reverse
+                handleStyle={{
+                  borderColor: "#9000FF",
+                  height: 25,
+                  width: 25,
+                  marginLeft: -14,
+                  marginTop: -9,
+                  backgroundColor: "#9000FF",
+                }}
+                railStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
+                min={this.state.sliderFreqDefault - 3000}
+                max={24000}
+                onChange={this.onSliderChange.bind(this)}
+              />
+            </div>
             <br />
             {question_text4}
           </div>
@@ -206,10 +251,25 @@ class EndPage extends React.Component {
           <div>
             {question_text2}
             {question_text3}
-            <FreqSlider.FreqSlider3
-              callBackValue={this.callbackFreq.bind(this)}
-              initialValue={this.state.sliderFreqDefault}
-            />
+            <div className={styles.shortSlider}>
+              <Slider
+                defaultValue={this.state.sliderFreqDefault - 3000}
+                value={this.state.sliderFreq}
+                trackStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
+                handleStyle={{
+                  borderColor: "#FF8F00",
+                  height: 25,
+                  width: 25,
+                  marginLeft: 0,
+                  marginTop: -9,
+                  backgroundColor: "#FF8F00",
+                }}
+                railStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
+                min={this.state.sliderFreqDefault - 3000}
+                max={24000}
+                onChange={this.onSliderChange.bind(this)}
+              />
+            </div>
             <br />
             <br />
             {question_text4}

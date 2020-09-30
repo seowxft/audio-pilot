@@ -50,10 +50,11 @@ export const FreqSlider2 = ({ callBackValue, initialValue2 }) => {
           callBackValue(newValue);
         }}
         tooltipLabel={(currentValue) => `${currentValue}`}
-        tooltip="off"
+        tooltip="on"
         variant="info"
         min={initialValue2 - 500}
         max={maxFreq}
+        step={-1}
       />
     </div>
   );
