@@ -18,17 +18,19 @@ class EndPage extends React.Component {
     const userID = this.props.location.state.userID;
     const volume = this.props.location.state.volume;
     var currentDate = new Date();
+    var volMod = 0.1;
 
-    var adjvolume = 0.5 * volume;
+    var adjvolume = volMod * volume;
 
-    console.log(userID);
-    console.log(volume);
+    console.log("volume" + volume);
+    console.log("adjvolume" + adjvolume);
     // This will change for the questionnaires going AFTER the main task
     this.state = {
       userID: userID,
       volume: adjvolume,
       qnNumTotal: 3,
       qnNum: 0,
+      volMod: volMod,
       quizScreen: false,
       btnDisTone: false,
       btnDisNext: true,
@@ -50,6 +52,7 @@ class EndPage extends React.Component {
     this.audioContext = undefined;
     this.iosAudioContextUnlocked = false;
     this.handleClick = this.handleClick.bind(this);
+    this.redirectToTarget = this.redirectToTarget.bind(this);
   }
   /// END PROPS
 
@@ -85,6 +88,13 @@ class EndPage extends React.Component {
       btnDisNext: true,
       sliderFreq: this.state.sliderFreqDefault,
     });
+
+    if (qnNum > this.state.qnNumTotal) {
+      var adjvolume = this.state.volume / this.state.volMod;
+      console.log("qnNum: " + qnNum);
+      console.log("final vol: " + adjvolume);
+      this.setState({ volume: adjvolume });
+    }
   }
 
   // callbackFreq(callBackValue) {
@@ -117,6 +127,7 @@ class EndPage extends React.Component {
 
   ratingTask(qnNum) {
     var volume = this.state.volume / 100;
+    console.log("Playing at " + volume);
 
     let question_text1 = (
       <div className={styles.quiz}>
@@ -173,7 +184,10 @@ class EndPage extends React.Component {
 
     let question_text4 = (
       <div className="col-md-12 text-center">
-        [You must <strong>drag</strong> the slider at least once to click NEXT.]
+        <span className={styles.smallfont}>
+          [You must <strong>drag</strong> (not just click) the slider at least
+          once to click NEXT.]
+        </span>
         <br />
         <br />
         <Button
@@ -352,12 +366,14 @@ class EndPage extends React.Component {
 
   // Push to next page
   redirectToTarget() {
-    var adjvolume = this.state.volume / 0.8;
-    this.setState({ volume: adjvolume });
-
     this.props.history.push({
       pathname: `/AudioPilot`,
-      state: { userID: this.state.userID, volume: this.state.volume },
+      state: {
+        userID: this.state.userID,
+        volume: this.state.volume,
+        sliderFreq: this.state.sliderFreq,
+        volMod: this.state.volMod,
+      },
     });
   }
 

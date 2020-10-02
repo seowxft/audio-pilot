@@ -284,8 +284,11 @@ class HeadphoneCheck extends React.Component {
             <strong>3</strong> - THIRD sound was SOFTEST <br />
             <br />
             [Press the correct number key]
-            <br /> <br />
-            [Note: Number keys will not work unless you click the play button.]
+            <br /> <br />{" "}
+            <span className={styles.smallfont}>
+              [Note: Number keys will not work unless you click the play
+              button.]
+            </span>
           </span>
         </p>
       </div>
