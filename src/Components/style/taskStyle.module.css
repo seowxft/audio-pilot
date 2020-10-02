@@ -40,6 +40,24 @@ span.center {
   font-size: 25px;
 }
 
+span.left {
+  display: table;
+  margin: 0 auto;
+  float: left;
+  font-size: 14px;
+}
+
+span.right {
+  display: table;
+  margin: 0 auto;
+  float: right;
+  font-size: 14px;
+}
+
+span.smallfont {
+  font-size: 14px;
+}
+
 span.playTri {
   display: block;
   width: 50px;
