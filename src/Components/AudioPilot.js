@@ -10,8 +10,8 @@ import sound4 from "./audio/pilot/morriss_scream_1000.wav";
 import sound5 from "./audio/pilot/pinknoise_08amp_1500.wav";
 import sound6 from "./audio/pilot/zaldPardo_highfreq_1500.wav";
 import sound7 from "./audio/pilot/zaldPardo_metalscreech_1500.wav";
-import sound8 from "./audio/pilot/250hz_sinetone_08amp_1500.wav";
-import sound9 from "./audio/pilot/400hz_sinetone_08amp_1500.wav";
+// import sound8 from "./audio/pilot/250hz_sinetone_08amp_1500.wav";
+// import sound9 from "./audio/pilot/400hz_sinetone_08amp_1500.wav";
 import sound10 from "./audio/pilot/800hz_sinetone_08amp_1500.wav";
 
 import * as RatingSlider from "./RatingSlider.js";
@@ -106,6 +106,24 @@ class EndPage extends React.Component {
       "#b6c8a9",
       "#188fa7",
       "#7261a3",
+      "#008000",
+      "#395756",
+      "#4f5d75",
+      "#b6c8a9",
+      "#188fa7",
+      "#7261a3",
+      "#008000",
+      "#395756",
+      "#4f5d75",
+      "#b6c8a9",
+      "#188fa7",
+      "#7261a3",
+      "#008000",
+      "#395756",
+      "#4f5d75",
+      "#b6c8a9",
+      "#188fa7",
+      "#7261a3",
     ];
 
     var sounds = [
@@ -116,8 +134,6 @@ class EndPage extends React.Component {
       sound5,
       sound6,
       sound7,
-      sound8,
-      sound9,
       sound10,
     ];
 
