@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import RangeSlider from "react-bootstrap-range-slider";
+
 import styles from "./style/taskStyle.module.css";
 
 // var initialMin = 35;
@@ -31,6 +32,8 @@ export const AverSlider = ({ callBackValue, initialValue }) => {
         tooltip="on"
         variant="primary"
       />
+      <span className={styles.left}>very pleasant</span>
+      <span className={styles.right}>very unpleasant</span>
     </div>
   );
 };
@@ -52,6 +55,8 @@ export const ArouSlider = ({ callBackValue, initialValue2 }) => {
         tooltip="on"
         variant="warning"
       />
+      <span className={styles.left}>very sleepy</span>
+      <span className={styles.right}>very awake</span>
     </div>
   );
 };
@@ -73,6 +78,74 @@ export const ValSlider = ({ callBackValue, initialValue3 }) => {
         tooltip="on"
         variant="info"
       />
+      <span className={styles.left}>very miserable</span>
+      <span className={styles.right}>very happy</span>
+    </div>
+  );
+};
+
+export const ExampleAver = () => {
+  const [scale, setValue] = useState(50);
+
+  return (
+    <div className={styles.shortSlider}>
+      <RangeSlider
+        value={scale}
+        size="lg"
+        onChange={(changeEvent) => {
+          const newValue = changeEvent.target.value;
+          setValue(newValue);
+        }}
+        tooltipLabel={(currentValue) => `${currentValue}`}
+        tooltip="on"
+        variant="primary"
+      />
+      <span className={styles.left}>very pleasant</span>
+      <span className={styles.right}>very unpleasant</span>
+    </div>
+  );
+};
+
+export const ExampleArou = () => {
+  const [scale, setValue] = useState(50);
+
+  return (
+    <div className={styles.shortSlider}>
+      <RangeSlider
+        value={scale}
+        size="lg"
+        onChange={(changeEvent) => {
+          const newValue = changeEvent.target.value;
+          setValue(newValue);
+        }}
+        tooltipLabel={(currentValue) => `${currentValue}`}
+        tooltip="on"
+        variant="warning"
+      />
+      <span className={styles.left}>very sleepy</span>
+      <span className={styles.right}>very awake</span>
+    </div>
+  );
+};
+
+export const ExampleVal = () => {
+  const [scale, setValue] = useState(50);
+
+  return (
+    <div className={styles.shortSlider}>
+      <RangeSlider
+        value={scale}
+        size="lg"
+        onChange={(changeEvent) => {
+          const newValue = changeEvent.target.value;
+          setValue(newValue);
+        }}
+        tooltipLabel={(currentValue) => `${currentValue}`}
+        tooltip="on"
+        variant="info"
+      />
+      <span className={styles.left}>very miserable</span>
+      <span className={styles.right}>very happy</span>
     </div>
   );
 };
