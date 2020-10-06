@@ -21,6 +21,7 @@ import Tone from "react-tone";
 
 import Play from "./Play";
 import Pause from "./Pause";
+import { DATABASE_URL } from "./config";
 
 //shuffleSingle
 function shuffleSingle(array) {
@@ -88,42 +89,31 @@ class EndPage extends React.Component {
     console.log("FreqVol" + FreqVol);
 
     var varPlayColour = [
-      "#008000",
-      "#395756",
-      "#4f5d75",
+      "#d02f33",
+      "#cd5a7e",
+      "#49458d",
+      "#c17860",
+      "#19cdc4",
+      "#430031",
+      "#21d770",
+      "#948082",
+      "#bfafed",
       "#b6c8a9",
-      "#188fa7",
-      "#7261a3",
-      "#008000",
-      "#395756",
-      "#4f5d75",
-      "#b6c8a9",
-      "#188fa7",
-      "#7261a3",
-      "#008000",
-      "#395756",
-      "#4f5d75",
-      "#b6c8a9",
-      "#188fa7",
-      "#7261a3",
-      "#008000",
-      "#395756",
-      "#4f5d75",
-      "#b6c8a9",
-      "#188fa7",
-      "#7261a3",
-      "#008000",
-      "#395756",
-      "#4f5d75",
-      "#b6c8a9",
-      "#188fa7",
-      "#7261a3",
-      "#008000",
-      "#395756",
-      "#4f5d75",
-      "#b6c8a9",
-      "#188fa7",
-      "#7261a3",
+      "#0e0399",
+      "#d16ab1",
+      "#3f0d9a",
+      "#c42557",
+      "#8e63a0",
+      "#706804",
+      "#435f07",
+      "#8050a9",
+      "#0f46e1",
+      "#197cab",
+      "#9a287c",
+      "#b20d44",
+      "#0a286a",
+      "#e5af2d",
+      "#ed3e92",
     ];
 
     var sounds = [
@@ -148,7 +138,7 @@ class EndPage extends React.Component {
       .concat(Array(3).fill(lowerFreqVol));
 
     // shuffleDouble(soundArray, soundVol);
-    // shuffleSingle(varPlayColour);
+    shuffleSingle(varPlayColour);
 
     var qnNumTotal = soundArray.length + 6;
     // the last six numbers will be for the frequency
@@ -159,10 +149,15 @@ class EndPage extends React.Component {
 
     var averRatingDef = randomArray(qnNumTotal, 35, 65);
     var arouRatingDef = randomArray(qnNumTotal, 35, 65);
-    var valRatingDef = randomArray(qnNumTotal, 35, 65);
+    var domRatingDef = randomArray(qnNumTotal, 35, 65);
 
     var sliderFreq2 = sliderFreq - 250;
     var sliderFreq3 = sliderFreq - 500;
+
+    var sliderKey = Array.from(Array(qnNumTotal * 3).keys());
+
+    var qnTime = Math.round(performance.now());
+
     // This will change for the questionnaires going AFTER the main task
     this.state = {
       userID: userID,
@@ -170,22 +165,26 @@ class EndPage extends React.Component {
       soundVol: soundVol,
       qnNumTotal: qnNumTotal,
       qnNum: 1,
+      qnTime: qnTime,
+      qnRT: 0,
       quizScreen: false,
       sounds: soundArray,
       currentInstructionText: 1,
+      playNum: 0,
 
       averRatingDef: averRatingDef,
       arouRatingDef: arouRatingDef,
-      valRatingDef: valRatingDef,
+      domRatingDef: domRatingDef,
 
       qnNumTotalIndex: qnNumTotalIndex,
       freqnIndex: freqnIndex,
       soundIndex: 0,
       volume: 0,
+      sliderKey: sliderKey,
 
       averRating: null,
       arouRating: null,
-      valRating: null,
+      domRating: null,
       active: false,
       soundFocus: null,
       freqFocus: null,
@@ -214,8 +213,8 @@ class EndPage extends React.Component {
 
   handleClick = () => {
     if (!this.iosAudioContextUnlocked) this.playEmptyBuffer();
-
-    this.setState({ isTonePlaying: true });
+    var playNum = this.state.playNum + 1;
+    this.setState({ isTonePlaying: true, playNum: playNum });
   };
 
   // This handles instruction screen within the component
@@ -230,88 +229,6 @@ class EndPage extends React.Component {
     }
   }
 
-  saveData() {
-    var qnTime = Math.round(performance.now()) - this.state.quizTime;
-
-    let quizbehaviour = {
-      userID: this.state.userID,
-      qnTime: qnTime,
-      qnNum: this.state.qnNum,
-      soundIndex: this.state.soundIndex,
-      soundFocus: this.state.soundFocus,
-      freqFocus: this.state.freqFocus,
-      volume: this.state.volume,
-      averRating: this.state.averRating,
-      arouRating: this.state.arouRating,
-      valRating: this.state.valRating,
-    };
-
-    // fetch(`${DATABASE_URL}/data/` + fileID, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(behaviour),
-    // });
-
-    //lag a bit to make sure statestate is saved
-    setTimeout(
-      function () {
-        this.quizNext();
-      }.bind(this),
-      10
-    );
-  }
-
-  quizNext() {
-    var qnNum = this.state.qnNum + 1;
-    var quizTime = Math.round(performance.now()); //for the next question
-
-    var qnNumTotalIndex = this.state.qnNumTotalIndex;
-    var soundIndex = qnNumTotalIndex[qnNum - 1];
-    var freqnIndex = this.state.freqnIndex;
-    var soundbite = this.state.sounds[soundIndex];
-    var volume = this.state.soundVol[soundIndex];
-
-    this.useEffect();
-
-    if (freqnIndex.includes(soundIndex)) {
-      var freqArrayIdx = freqnIndex.indexOf(soundIndex);
-      var freqSounds = this.state.freqSounds[freqArrayIdx];
-      //if it is a frequencysound
-      this.setState({
-        qnNum: qnNum,
-        quizTime: quizTime,
-        soundIndex: soundIndex,
-        freqFocus: freqSounds,
-        volume: volume,
-        averRating: null,
-        arouRating: null,
-        valRating: null,
-        btnDisNext: true,
-        btnDisTone: false,
-        active: false,
-        soundFocus: null,
-      });
-    } else {
-      this.setState({
-        qnNum: qnNum,
-        quizTime: quizTime,
-        soundIndex: soundIndex,
-        freqFocus: null,
-        volume: volume,
-        averRating: null,
-        arouRating: null,
-        valRating: null,
-        btnDisNext: true,
-        btnDisTone: false,
-        active: false,
-        soundFocus: soundbite,
-      });
-    }
-  }
-
   // Toggle on and off
   // togglePlay() {
   //   this.setState({ active: !this.state.active }, () => {
@@ -320,6 +237,11 @@ class EndPage extends React.Component {
   // }
 
   togglePlaying() {
+    if (this.state.active === false) {
+      var playNum = this.state.playNum + 1;
+      this.setState({ playNum: playNum });
+    }
+
     this.setState({ active: !this.state.active });
   }
 
@@ -340,24 +262,24 @@ class EndPage extends React.Component {
     console.log("soundbite " + soundbite);
 
     if (freqnIndex.includes(soundIndex)) {
-      var freqArrayIdx = freqnIndex.indexOf(soundIndex);
-      var freqSounds = this.state.freqSounds[freqArrayIdx];
       //if it includes, then it is a frequency noise to be played
       this.setState({
         quizScreen: true,
+        qnTime: currTime,
         qnNum: 1,
+        playNum: 0,
         active: false,
         volume: volume,
-        qnTime: currTime,
         soundFocus: null,
       });
     } else {
       this.setState({
         quizScreen: true,
+        qnTime: currTime,
         qnNum: 1,
+        playNum: 0,
         active: false,
         volume: volume,
-        qnTime: currTime,
         soundFocus: soundbite,
       });
     }
@@ -381,7 +303,7 @@ class EndPage extends React.Component {
     if (
       this.state.averRating !== null &&
       this.state.arouRating !== null &&
-      this.state.valRating !== null
+      this.state.domRating !== null
     ) {
       this.setState({ btnDisNext: false });
     }
@@ -392,18 +314,18 @@ class EndPage extends React.Component {
     if (
       this.state.averRating !== null &&
       this.state.arouRating !== null &&
-      this.state.valRating !== null
+      this.state.domRating !== null
     ) {
       this.setState({ btnDisNext: false });
     }
   }
 
   callbackVal(callBackValue) {
-    this.setState({ valRating: callBackValue });
+    this.setState({ domRating: callBackValue });
     if (
       this.state.averRating !== null &&
       this.state.arouRating !== null &&
-      this.state.valRating !== null
+      this.state.domRating !== null
     ) {
       this.setState({ btnDisNext: false });
     }
@@ -413,7 +335,7 @@ class EndPage extends React.Component {
     var qnIndx = qnNum - 1;
     var averRatingDef = this.state.averRatingDef[qnIndx];
     var arouRatingDef = this.state.arouRatingDef[qnIndx];
-    var valRatingDef = this.state.valRatingDef[qnIndx];
+    var domRatingDef = this.state.domRatingDef[qnIndx];
     var freqnIndex = this.state.freqnIndex;
     var qnNumTotalIndex = this.state.qnNumTotalIndex;
     var soundIndex = qnNumTotalIndex[qnIndx];
@@ -430,6 +352,8 @@ class EndPage extends React.Component {
               Sound {this.state.qnNum} of {this.state.qnNumTotal}
             </strong>
           </span>
+          <br />
+          Please do not adjust your volume settings.
           <br />
           You can play the sound as many times as you like!
         </span>
@@ -482,11 +406,12 @@ class EndPage extends React.Component {
     let question_text2 = (
       <div className={styles.quiz}>
         <span className={styles.centerTwo}>
-          <strong>Q{this.state.qnNum}a:</strong> How aversive is this sound?
+          <strong>Q{this.state.qnNum}a:</strong> How positive/negative is this
+          sound?
           <br />
           <br />
           <RatingSlider.AverSlider
-            key={averRatingDef}
+            key={this.state.sliderKey[qnIndx]}
             callBackValue={this.callbackAver.bind(this)}
             initialValue={averRatingDef}
           />
@@ -497,21 +422,20 @@ class EndPage extends React.Component {
           <br />
           <br />
           <RatingSlider.ArouSlider
-            key={arouRatingDef}
+            key={this.state.sliderKey[qnIndx + this.state.qnNumTotal]}
             callBackValue={this.callbackArou.bind(this)}
             initialValue2={arouRatingDef}
           />
           <br />
           <br />
           <br />
-          <strong>Q{this.state.qnNum}c:</strong> How negative or postive is this
-          sound?
+          <strong>Q{this.state.qnNum}c:</strong> How dominant is this sound?
           <br />
           <br />
-          <RatingSlider.ValSlider
-            key={valRatingDef}
+          <RatingSlider.DomSlider
+            key={this.state.sliderKey[qnIndx + this.state.qnNumTotal * 2]}
             callBackValue={this.callbackVal.bind(this)}
-            initialValue3={valRatingDef}
+            initialValue3={domRatingDef}
           />
           <br />
           <br /> <br />
@@ -540,6 +464,97 @@ class EndPage extends React.Component {
         {question_text2}
       </div>
     );
+  }
+
+  saveData() {
+    var qnRT = Math.round(performance.now()) - this.state.qnTime;
+    var userID = this.state.userID;
+    let quizbehaviour = {
+      userID: this.state.userID,
+      qnTime: this.state.qnTime,
+      qnRT: qnRT,
+      qnNum: this.state.qnNum,
+      soundIndex: this.state.soundIndex,
+      soundFocus: this.state.soundFocus,
+      freqFocus: this.state.freqFocus,
+      volume: this.state.volume,
+      playNum: this.state.playNum,
+      averRating: this.state.averRating,
+      arouRating: this.state.arouRating,
+      domRating: this.state.domRating,
+      averRatingDef: this.state.averRatingDef[this.state.qnNum - 1],
+      arouRatingDef: this.state.arouRatingDef[this.state.qnNum - 1],
+      domRatingDef: this.state.domRatingDef[this.state.qnNum - 1],
+    };
+
+    fetch(`${DATABASE_URL}/audio_pilot/` + userID, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quizbehaviour),
+    });
+
+    console.log(quizbehaviour);
+
+    //lag a bit to make sure statestate is saved
+    setTimeout(
+      function () {
+        this.quizNext();
+      }.bind(this),
+      10
+    );
+  }
+
+  quizNext() {
+    var qnNum = this.state.qnNum + 1;
+    var qnTime = Math.round(performance.now()); //for the next question
+
+    var qnNumTotalIndex = this.state.qnNumTotalIndex;
+    var soundIndex = qnNumTotalIndex[qnNum - 1];
+    var freqnIndex = this.state.freqnIndex;
+    var soundbite = this.state.sounds[soundIndex];
+    var volume = this.state.soundVol[soundIndex];
+
+    this.useEffect();
+
+    if (freqnIndex.includes(soundIndex)) {
+      var freqArrayIdx = freqnIndex.indexOf(soundIndex);
+      var freqSounds = this.state.freqSounds[freqArrayIdx];
+      //if it is a frequencysound
+      this.setState({
+        qnNum: qnNum,
+        qnTime: qnTime,
+        soundIndex: soundIndex,
+        freqFocus: freqSounds,
+        volume: volume,
+        playNum: 0,
+        averRating: null,
+        arouRating: null,
+        domRating: null,
+        btnDisNext: true,
+        btnDisTone: false,
+        active: false,
+        soundFocus: null,
+      });
+    } else {
+      this.setState({
+        qnNum: qnNum,
+        qnTime: qnTime,
+        soundIndex: soundIndex,
+        freqFocus: null,
+        volume: volume,
+        playNum: 0,
+        averRating: null,
+        arouRating: null,
+        domRating: null,
+        btnDisNext: true,
+        btnDisTone: false,
+        active: false,
+        soundFocus: soundbite,
+      });
+    }
   }
 
   // Mount the component to call the BACKEND and GET the information
@@ -584,10 +599,11 @@ class EndPage extends React.Component {
               <br /> <br />
               There are three scales:
               <br />
-              1) <strong>aversive</strong>: on scale of pleasant to unpleasant
+              1) <strong>valence</strong>: on scale of pleasant to unpleasant
               <br />
               2) <strong>arousal</strong>: on scale of sleepy to awake <br />
-              3) <strong>valence</strong>: on scale of miserable to happy
+              3) <strong>dominance</strong>: on scale of no control to in
+              control
               <br />
               <br />
               <span className={styles.center}>
@@ -613,23 +629,22 @@ class EndPage extends React.Component {
               When you are asked to rate the sound on the:
               <br /> <br />{" "}
               <span className={styles.centerTwo}>
-                <strong>Aversive</strong> scale
+                <strong>Valence</strong> scale
               </span>
               <br />
               <RatingSlider.ExampleAver />
               <br />
               <br />
               Very <strong>pleasant</strong> sounds (0 on the scale) would be
-              sounds which you greatly enjoy hearing,
+              sounds which
               <br />
-              and would like to listen to them again many times.
+              you greatly enjoy hearing, and give you feelings of happiness.
               <br />
               <br />
               In contrast, very <strong>unpleasant</strong> sounds (100 on the
-              scale) would be be sounds you greatly dislike,
+              scale) would be sounds
               <br />
-              that are annoying/bothersome and you would not want to listen to
-              them again.
+              you greatly dislike, that you find are annoying or bothersome.
               <br />
               <br />
               <span className={styles.center}>
@@ -670,12 +685,15 @@ class EndPage extends React.Component {
               <br />
               <br />
               <strong>Not arousing</strong> sounds (0 on the scale) would be
-              sounds which make you feel very sleepy, relaxed or low energy.
+              sounds which
+              <br />
+              make you feel very sleepy, bored or low energy.
               <br />
               <br />
               In contrast, <strong>very arousing</strong> sounds (100 on the
-              scale) would be be sounds that make you feel very awake, excited
-              or high energy.
+              scale) would be sounds that
+              <br />
+              make you feel very awake, excited or high energy.
               <br />
               <br />
               <span className={styles.center}>
@@ -709,18 +727,23 @@ class EndPage extends React.Component {
               When you are asked to rate the sound on the:
               <br /> <br />{" "}
               <span className={styles.centerTwo}>
-                <strong>Valence</strong> scale
+                <strong>Dominance</strong> scale
               </span>
               <br />
-              <RatingSlider.ExampleVal />
+              <RatingSlider.ExampleDom />
               <br />
               <br />
-              <strong>Negative</strong> sounds (0 on the scale) would be sounds
-              which make you feel very miserable.
+              <strong>Low dominance</strong> sounds (0 on the scale) would be
+              sounds which
+              <br />
+              your emotion makes you feel that you are not in control at all of
+              the situation.
               <br />
               <br />
-              In contrast, <strong>positive</strong> sounds (100 on the scale)
-              which make you feel very happy.
+              In contrast, <strong>high dominance</strong> sounds (100 on the
+              scale) which
+              <br />
+              your emotion makes you feel that you are 100% in control.
               <br />
               <br />
               <span className={styles.center}>

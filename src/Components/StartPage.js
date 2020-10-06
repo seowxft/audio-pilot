@@ -19,8 +19,8 @@ class StartPage extends React.Component {
     var timeString = currentDate.toTimeString();
 
     // Gen a random 6 digit number for now
-    // var userID = Math.floor(100000 + Math.random() * 900000);
-    var userID = 100000; //for testing
+    var userID = Math.floor(100000 + Math.random() * 900000);
+    //var userID = 100000; //for testing
 
     // Set state
     this.state = {
@@ -31,8 +31,6 @@ class StartPage extends React.Component {
       consentComplete: 0,
     };
 
-    // update State when consent is complete
-    //  this.onCompleteConsent = this.onCompleteConsent.bind(this);
     this.redirectToTarget = this.redirectToTarget.bind(this);
   }
 
@@ -126,8 +124,6 @@ class StartPage extends React.Component {
         </div>
       );
     } else {
-      // this.redirectToTarget();
-
       return null;
     }
   }

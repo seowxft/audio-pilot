@@ -15,6 +15,7 @@ import * as SliderVol from "./VolumeSlider.js";
 import styles from "./style/taskStyle.module.css";
 
 import PlayButton from "./PlayButton";
+import { DATABASE_URL } from "./config";
 
 //shuffleSingle
 function shuffleSingle(array) {
@@ -53,6 +54,8 @@ function shuffleDouble(fileNames, trackTitles) {
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Start react component
 class HeadphoneCheck extends React.Component {
   constructor(props) {
     super(props);
@@ -68,10 +71,10 @@ class HeadphoneCheck extends React.Component {
     ];
 
     var varPlayColour = [
-      "#008000",
+      "#bf0069",
       "#395756",
       "#4f5d75",
-      "#b6c8a9",
+      "#4d8f1e",
       "#188fa7",
       "#7261a3",
     ];
@@ -80,6 +83,7 @@ class HeadphoneCheck extends React.Component {
 
     shuffleSingle(varPlayColour);
     shuffleDouble(quizSounds, quizAns);
+    var currTime = Math.round(performance.now());
 
     this.state = {
       userID: userID,
@@ -90,12 +94,15 @@ class HeadphoneCheck extends React.Component {
       qnNumTotal: 6,
       qnNum: 1,
 
-      qnTime: 0,
+      qnTime: currTime,
+      qnRT: 0,
       qnPressKey: [],
       qnCorr: [],
       quizAns: quizAns,
       quizSum: 0,
       quizPer: 0,
+      quizSoundsIndiv: null,
+      quizAnsIndiv: null,
 
       active: false,
       playOnceOnly: false,
@@ -117,28 +124,14 @@ class HeadphoneCheck extends React.Component {
 
     this.togglePlaying = this.togglePlaying.bind(this);
     this.handleInstructionsLocal = this.handleInstructionsLocal.bind(this);
-    // this.togglePlayCalib = this.togglePlayCalib.bind(this);
-    // this.togglePlayHeadphone = this.togglePlayHeadphone.bind(this);
     this.redirectToTarget = this.redirectToTarget.bind(this);
     this.redirectToBack = this.redirectToBack.bind(this);
     this.display_question = this.display_question.bind(this);
   }
   // Constructor and props END
 
-  resetSounds() {
-    var quizSounds = this.state.quizSounds;
-    var quizAns = this.state.quizAns;
-    var varPlayColour = this.statevar.PlayColour;
-
-    shuffleSingle(varPlayColour);
-    shuffleDouble(quizSounds, quizAns);
-
-    this.setState({
-      quizSounds: quizSounds,
-      quizAns: quizAns,
-      varPlayColour: varPlayColour,
-    });
-  }
+  ///////////////////////////////////////////////////////////////////////////////
+  //
 
   // This handles instruction screen within the component
   handleInstructionsLocal(event) {
@@ -152,58 +145,6 @@ class HeadphoneCheck extends React.Component {
     }
   }
 
-  callbackVol(callBackValue) {
-    this.setState({ volume: callBackValue });
-  }
-
-  saveData() {
-    if (this.state.checkStage === 1) {
-      let quizbehaviour = {
-        userID: this.state.userID,
-        checkStage: this.state.checkStage,
-        volume: this.state.volume,
-      };
-
-      setTimeout(
-        function () {
-          this.nextStage();
-        }.bind(this),
-        10
-      );
-    } else {
-      let quizbehaviour = {
-        userID: this.state.userID,
-        checkStage: this.state.checkStage,
-        qnNum: this.state.qnNum,
-        qnTime: this.state.qnTime,
-        qnPressKey: this.state.qnPressKey,
-        qnCorrIndiv: this.state.qnCorrIndiv,
-      };
-      setTimeout(
-        function () {
-          this.nextQn();
-        }.bind(this),
-        10
-      );
-    }
-    // fetch(`${DATABASE_URL}/data/` + fileID, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(quizbehaviour),
-    // });
-  }
-
-  nextStage() {
-    this.setState({
-      checkStage: 2,
-      currentInstructionText: 1,
-      quizScreen: false,
-    });
-  }
-
   // Start the audio test
   start_quest() {
     var currTime = Math.round(performance.now());
@@ -215,6 +156,32 @@ class HeadphoneCheck extends React.Component {
       playOnceOnly: true, //change this to make sure sounds can only play once for the quiz
       playNum: false,
       active: false,
+    });
+  }
+
+  // Reset if fail the calib
+  resetSounds() {
+    var quizSounds = this.state.quizSounds;
+    var quizAns = this.state.quizAns;
+    var varPlayColour = this.statevar.PlayColour;
+
+    shuffleSingle(varPlayColour);
+    shuffleDouble(quizSounds, quizAns);
+
+    this.setState({
+      quizSounds: quizSounds,
+      quizAns: quizAns,
+      varPlayColour: varPlayColour,
+      quizSoundsIndiv: null,
+      quizAnsIndiv: null,
+    });
+  }
+
+  nextStage() {
+    this.setState({
+      checkStage: 2,
+      currentInstructionText: 1,
+      quizScreen: false,
     });
   }
 
@@ -237,8 +204,8 @@ class HeadphoneCheck extends React.Component {
     }
   }
 
-  useEffect() {
-    window.scrollTo(0, 0);
+  callbackVol(callBackValue) {
+    this.setState({ volume: callBackValue });
   }
 
   //Display question
@@ -299,10 +266,11 @@ class HeadphoneCheck extends React.Component {
   next_question(pressed, time_pressed) {
     this.useEffect();
     document.removeEventListener("keydown", this._handleKeyDownNumbers);
+
+    var qnRT = time_pressed - this.state.qnTime;
     var qnNum = this.state.qnNum;
     var quizSum = this.state.quizSum;
     var qnPressKey = this.state.qnPressKey;
-    var qnTime = this.state.qnTime;
     var qnCorr = this.state.qnCorr;
     var qnCorrIndiv = this.state.qnCorrIndiv;
     var quizAns = this.state.quizAns;
@@ -331,7 +299,6 @@ class HeadphoneCheck extends React.Component {
     console.log("qnCorr: " + qnCorr);
     console.log("quizSum: " + quizSum);
     qnPressKey = pressed;
-    qnTime = time_pressed;
 
     quizPer = (qnNum / qnNumTotal) * 100;
 
@@ -340,7 +307,7 @@ class HeadphoneCheck extends React.Component {
       quizPer: quizPer,
       quizSum: quizSum,
       qnPressKey: qnPressKey,
-      qnTime: qnTime,
+      qnRT: qnRT,
       qnCorr: qnCorr,
       qnCorrIndiv: qnCorrIndiv,
     });
@@ -353,16 +320,93 @@ class HeadphoneCheck extends React.Component {
     );
   }
 
+  saveData() {
+    var userID = this.state.userID;
+    var currTime = Math.round(performance.now());
+
+    if (this.state.checkStage === 1) {
+      var quizbehaviour = {
+        userID: this.state.userID,
+        checkTry: this.state.checkTry,
+        checkStage: this.state.checkStage,
+        qnTime: this.state.qnTime,
+        qnRT: currTime - this.state.qnRT,
+        qnNum: 1,
+        volume: this.state.volume,
+        quizSoundsIndiv: null,
+        quizAnsIndiv: null,
+        qnPressKey: null,
+        qnCorrIndiv: null,
+      };
+
+      fetch(`${DATABASE_URL}/headphone_check/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quizbehaviour),
+      });
+
+      console.log(quizbehaviour);
+
+      setTimeout(
+        function () {
+          this.nextStage();
+        }.bind(this),
+        10
+      );
+    } else {
+      var quizbehaviour = {
+        userID: this.state.userID,
+        checkTry: this.state.checkTry,
+        checkStage: this.state.checkStage,
+        qnTime: this.state.qnTime,
+        qnRT: this.state.qnRT,
+        qnNum: this.state.qnNum,
+        volume: this.state.volume,
+        quizSoundsIndiv: this.state.quizSounds[this.state.qnNum - 1],
+        quizAnsIndiv: this.state.quizAns[this.state.qnNum - 1],
+        qnPressKey: this.state.qnPressKey,
+        qnCorrIndiv: this.state.qnCorrIndiv,
+      };
+
+      fetch(`${DATABASE_URL}/headphone_check/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quizbehaviour),
+      });
+
+      console.log(quizbehaviour);
+
+      setTimeout(
+        function () {
+          this.nextQn();
+        }.bind(this),
+        10
+      );
+    }
+  }
+
   nextQn() {
     var qnNum = this.state.qnNum + 1;
+    var currTime = Math.round(performance.now());
 
     this.setState({
       qnNum: qnNum,
+      qnTime: currTime,
       active: false,
       playNum: false, //reset so next question can play once
       playOnceOnly: true, //change this to make sure sounds can only play once for the quiz
+      quizSoundsIndiv: null,
+      quizAnsIndiv: null,
     });
   }
+
+  ////////////////////////////////////////////////////////////////////////////////
 
   //Handle keyboard presses
 
@@ -392,6 +436,9 @@ class HeadphoneCheck extends React.Component {
       default:
     }
   };
+
+  ////////////////////////////////////////////////////////////////////////////////
+
   // Mount the component to call the BACKEND and GET the information
   componentDidMount() {
     window.scrollTo(0, 0);
@@ -420,6 +467,10 @@ class HeadphoneCheck extends React.Component {
     );
   }
 
+  useEffect() {
+    window.scrollTo(0, 0);
+  }
+
   redirectToTarget() {
     this.props.history.push({
       pathname: `/AudioFreq`,
@@ -427,6 +478,7 @@ class HeadphoneCheck extends React.Component {
     });
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
   // Render START
   render() {
     let text;

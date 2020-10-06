@@ -61,13 +61,13 @@ export const ArouSlider = ({ callBackValue, initialValue2 }) => {
   );
 };
 
-export const ValSlider = ({ callBackValue, initialValue3 }) => {
-  const [valScale, setValue] = useState(initialValue3);
+export const DomSlider = ({ callBackValue, initialValue3 }) => {
+  const [DomScale, setValue] = useState(initialValue3);
 
   return (
     <div className={styles.shortSlider}>
       <RangeSlider
-        value={valScale}
+        value={DomScale}
         size="lg"
         onChange={(changeEvent) => {
           const newValue = changeEvent.target.value;
@@ -78,8 +78,8 @@ export const ValSlider = ({ callBackValue, initialValue3 }) => {
         tooltip="on"
         variant="info"
       />
-      <span className={styles.left}>very miserable</span>
-      <span className={styles.right}>very happy</span>
+      <span className={styles.left}>no control</span>
+      <span className={styles.right}>in control</span>
     </div>
   );
 };
@@ -128,7 +128,7 @@ export const ExampleArou = () => {
   );
 };
 
-export const ExampleVal = () => {
+export const ExampleDom = () => {
   const [scale, setValue] = useState(50);
 
   return (
@@ -144,8 +144,8 @@ export const ExampleVal = () => {
         tooltip="on"
         variant="info"
       />
-      <span className={styles.left}>very miserable</span>
-      <span className={styles.right}>very happy</span>
+      <span className={styles.left}>no control</span>
+      <span className={styles.right}>in control</span>
     </div>
   );
 };

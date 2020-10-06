@@ -10,6 +10,7 @@ import "rc-slider/assets/index.css";
 
 import Play from "./Play";
 import Pause from "./Pause";
+import { DATABASE_URL } from "./config";
 
 class EndPage extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class EndPage extends React.Component {
     const userID = this.props.location.state.userID;
     const volume = this.props.location.state.volume;
     var currentDate = new Date();
+    var currTime = Math.round(performance.now());
     var volMod = 0.1;
 
     var adjvolume = volMod * volume;
@@ -27,7 +29,10 @@ class EndPage extends React.Component {
     // This will change for the questionnaires going AFTER the main task
     this.state = {
       userID: userID,
+
       volume: adjvolume,
+      qnTime: currTime,
+      qnRT: 0,
       qnNumTotal: 3,
       qnNum: 0,
       volMod: volMod,
@@ -38,7 +43,7 @@ class EndPage extends React.Component {
       sliderFreq: null,
       sliderFreqDefault: 800,
       freqThres: [0, 0, 0],
-
+      freqThresIndiv: null,
       toneLength: 2,
     };
 
@@ -63,6 +68,7 @@ class EndPage extends React.Component {
       quizScreen: true,
       qnNum: 0,
       qnTime: currTime,
+      qnRT: 0,
     });
     setTimeout(
       function () {
@@ -74,27 +80,6 @@ class EndPage extends React.Component {
 
   useEffect() {
     window.scrollTo(0, 0);
-  }
-
-  quizNext() {
-    this.useEffect();
-    var qnNum = this.state.qnNum + 1;
-    var quizTime = Math.round(performance.now()); //for the next question
-    var percentage = (qnNum / this.state.qnNumTotal) * 100;
-    this.setState({
-      qnNum: qnNum,
-      quizTime: quizTime,
-      btnDisTone: false,
-      btnDisNext: true,
-      sliderFreq: this.state.sliderFreqDefault,
-    });
-
-    if (qnNum > this.state.qnNumTotal) {
-      var adjvolume = this.state.volume / this.state.volMod;
-      console.log("qnNum: " + qnNum);
-      console.log("final vol: " + adjvolume);
-      this.setState({ volume: adjvolume });
-    }
   }
 
   // callbackFreq(callBackValue) {
@@ -235,7 +220,7 @@ class EndPage extends React.Component {
           <div>
             {question_text2}
             {question_text3}
-            <br />
+
             <div className={styles.shortSlider}>
               <Slider
                 defaultValue={this.state.sliderFreqDefault - 3000}
@@ -295,46 +280,43 @@ class EndPage extends React.Component {
 
   saveQuizData() {
     // var fileID = this.state.fileID;
-    var qnTime = Math.round(performance.now()) - this.state.quizTime;
+    var qnRT = Math.round(performance.now()) - this.state.qnTime;
     var freqThres = this.state.freqThres;
-    var qnNum = this.state.qnNum;
-    console.log("freqThres " + freqThres);
     freqThres[this.state.qnNum - 1] = this.state.sliderFreq;
+    var freqThresIndiv = this.state.sliderFreq;
+    var userID = this.state.userID;
 
-    var sliderFreqDefault = this.state.sliderFreq - 1000;
-
-    console.log("qnNum " + qnNum);
+    console.log("qnNum " + this.state.qnNum);
     console.log("freqThres " + freqThres);
 
     this.setState({
-      qnNum: qnNum,
-      quizTime: qnTime,
-      btnDisTone: false,
-      btnDisNext: true,
-      sliderFreqDefault: sliderFreqDefault,
+      qnRT: qnRT,
+      freqThresIndiv: freqThresIndiv,
+      freqThres: freqThres,
     });
 
     let quizbehaviour = {
       userID: this.state.userID,
-      qnTime: qnTime,
-      qnNum: qnNum,
-      freqThres: freqThres,
-      sliderFreqDefault: sliderFreqDefault,
-      sliderFreq: sliderFreqDefault,
+      qnTime: this.state.qnTime,
+      qnRT: qnRT,
+      qnNum: this.state.qnNum,
+      adjvol: this.state.volume / this.state.volMod,
+      freqThresIndiv: freqThresIndiv,
+      sliderFreqDefault: this.state.sliderFreqDefault,
     };
 
-    // try {
-    //   fetch(`${DATABASE_URL}/task_quiz/` + fileID, {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(quizbehaviour),
-    //   });
-    // } catch (e) {
-    //   console.log("Cant post?");
-    // }
+    try {
+      fetch(`${DATABASE_URL}/audio_freq/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quizbehaviour),
+      });
+    } catch (e) {
+      console.log("Cant post?");
+    }
 
     //lag a bit to make sure statestate is saved
     setTimeout(
@@ -343,6 +325,30 @@ class EndPage extends React.Component {
       }.bind(this),
       10
     );
+  }
+
+  quizNext() {
+    this.useEffect();
+    var qnNum = this.state.qnNum + 1;
+    var qnTime = Math.round(performance.now()); //for the next question
+    var sliderFreqDefault = this.state.freqThresIndiv - 1000;
+
+    this.setState({
+      qnNum: qnNum,
+      qnTime: qnTime,
+      btnDisTone: false,
+      btnDisNext: true,
+      freqThresIndiv: null,
+      sliderFreq: sliderFreqDefault,
+      sliderFreqDefault: sliderFreqDefault,
+    });
+
+    if (qnNum > this.state.qnNumTotal) {
+      var adjvolume = this.state.volume / this.state.volMod;
+      console.log("qnNum: " + qnNum);
+      console.log("final vol: " + adjvolume);
+      this.setState({ volume: adjvolume });
+    }
   }
 
   playEmptyBuffer = () => {
