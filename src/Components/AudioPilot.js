@@ -162,8 +162,8 @@ class AudioPilot extends React.Component {
       userID: userID,
 
       soundVol: soundVol,
-      //  qnNumTotal: qnNumTotal,
-      qnNumTotal: 1,
+      qnNumTotal: qnNumTotal,
+      //qnNumTotal: 1,// for debug
       qnNum: 1,
       qnTime: qnTime,
       qnRT: 0,

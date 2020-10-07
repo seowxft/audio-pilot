@@ -211,7 +211,7 @@ class HeadphoneCheck extends React.Component {
   //Display question
   display_question(qnNum) {
     //comment this out after debuging, it will make sure that you can only cont when after you play the sound
-    document.addEventListener("keydown", this._handleKeyDownNumbers);
+    //  document.addEventListener("keydown", this._handleKeyDownNumbers);
     console.log("playOnceOnly: " + this.state.playOnceOnly);
 
     var audioBite = this.state.quizSounds[qnNum - 1];
