@@ -12,7 +12,7 @@ import Play from "./Play";
 import Pause from "./Pause";
 import { DATABASE_URL } from "./config";
 
-class EndPage extends React.Component {
+class AudioFreq extends React.Component {
   constructor(props) {
     super(props);
 
@@ -442,4 +442,4 @@ class EndPage extends React.Component {
   }
 }
 
-export default withRouter(EndPage);
+export default withRouter(AudioFreq);

@@ -68,7 +68,7 @@ function randomArray(length, min, max) {
   });
 }
 
-class EndPage extends React.Component {
+class AudioPilot extends React.Component {
   constructor(props) {
     super(props);
 
@@ -149,12 +149,11 @@ class EndPage extends React.Component {
 
     var averRatingDef = randomArray(qnNumTotal, 35, 65);
     var arouRatingDef = randomArray(qnNumTotal, 35, 65);
-    var domRatingDef = randomArray(qnNumTotal, 35, 65);
 
     var sliderFreq2 = sliderFreq - 250;
     var sliderFreq3 = sliderFreq - 500;
 
-    var sliderKey = Array.from(Array(qnNumTotal * 3).keys());
+    var sliderKey = Array.from(Array(qnNumTotal * 2).keys());
 
     var qnTime = Math.round(performance.now());
 
@@ -163,7 +162,8 @@ class EndPage extends React.Component {
       userID: userID,
 
       soundVol: soundVol,
-      qnNumTotal: qnNumTotal,
+      //  qnNumTotal: qnNumTotal,
+      qnNumTotal: 1,
       qnNum: 1,
       qnTime: qnTime,
       qnRT: 0,
@@ -174,7 +174,6 @@ class EndPage extends React.Component {
 
       averRatingDef: averRatingDef,
       arouRatingDef: arouRatingDef,
-      domRatingDef: domRatingDef,
 
       qnNumTotalIndex: qnNumTotalIndex,
       freqnIndex: freqnIndex,
@@ -184,7 +183,7 @@ class EndPage extends React.Component {
 
       averRating: null,
       arouRating: null,
-      domRating: null,
+
       active: false,
       soundFocus: null,
       freqFocus: null,
@@ -224,7 +223,7 @@ class EndPage extends React.Component {
 
     if (whichButton === "left" && curText > 1) {
       this.setState({ currentInstructionText: curText - 1 });
-    } else if (whichButton === "right" && curText < 5) {
+    } else if (whichButton === "right" && curText < 4) {
       this.setState({ currentInstructionText: curText + 1 });
     }
   }
@@ -300,33 +299,14 @@ class EndPage extends React.Component {
 
   callbackAver(callBackValue) {
     this.setState({ averRating: callBackValue });
-    if (
-      this.state.averRating !== null &&
-      this.state.arouRating !== null &&
-      this.state.domRating !== null
-    ) {
+    if (this.state.averRating !== null && this.state.arouRating !== null) {
       this.setState({ btnDisNext: false });
     }
   }
 
   callbackArou(callBackValue) {
     this.setState({ arouRating: callBackValue });
-    if (
-      this.state.averRating !== null &&
-      this.state.arouRating !== null &&
-      this.state.domRating !== null
-    ) {
-      this.setState({ btnDisNext: false });
-    }
-  }
-
-  callbackVal(callBackValue) {
-    this.setState({ domRating: callBackValue });
-    if (
-      this.state.averRating !== null &&
-      this.state.arouRating !== null &&
-      this.state.domRating !== null
-    ) {
+    if (this.state.averRating !== null && this.state.arouRating !== null) {
       this.setState({ btnDisNext: false });
     }
   }
@@ -335,7 +315,7 @@ class EndPage extends React.Component {
     var qnIndx = qnNum - 1;
     var averRatingDef = this.state.averRatingDef[qnIndx];
     var arouRatingDef = this.state.arouRatingDef[qnIndx];
-    var domRatingDef = this.state.domRatingDef[qnIndx];
+
     var freqnIndex = this.state.freqnIndex;
     var qnNumTotalIndex = this.state.qnNumTotalIndex;
     var soundIndex = qnNumTotalIndex[qnIndx];
@@ -427,17 +407,6 @@ class EndPage extends React.Component {
             initialValue2={arouRatingDef}
           />
           <br />
-          <br />
-          <br />
-          <strong>Q{this.state.qnNum}c:</strong> How dominant is this sound?
-          <br />
-          <br />
-          <RatingSlider.DomSlider
-            key={this.state.sliderKey[qnIndx + this.state.qnNumTotal * 2]}
-            callBackValue={this.callbackVal.bind(this)}
-            initialValue3={domRatingDef}
-          />
-          <br />
           <br /> <br />
           <span className={styles.smallfont}>
             [Note: You must <strong>drag</strong> (not click) all sliders at
@@ -481,10 +450,9 @@ class EndPage extends React.Component {
       playNum: this.state.playNum,
       averRating: this.state.averRating,
       arouRating: this.state.arouRating,
-      domRating: this.state.domRating,
+
       averRatingDef: this.state.averRatingDef[this.state.qnNum - 1],
       arouRatingDef: this.state.arouRatingDef[this.state.qnNum - 1],
-      domRatingDef: this.state.domRatingDef[this.state.qnNum - 1],
     };
 
     fetch(`${DATABASE_URL}/audio_pilot/` + userID, {
@@ -532,7 +500,7 @@ class EndPage extends React.Component {
         playNum: 0,
         averRating: null,
         arouRating: null,
-        domRating: null,
+
         btnDisNext: true,
         btnDisTone: false,
         active: false,
@@ -548,7 +516,7 @@ class EndPage extends React.Component {
         playNum: 0,
         averRating: null,
         arouRating: null,
-        domRating: null,
+
         btnDisNext: true,
         btnDisTone: false,
         active: false,
@@ -570,8 +538,8 @@ class EndPage extends React.Component {
   // Push to next page
   redirectToTarget() {
     this.props.history.push({
-      pathname: `/EndPage`,
-      state: { participant_info: this.state },
+      pathname: `/Questionnaires`,
+      state: { userID: this.state.userID },
     });
   }
 
@@ -597,13 +565,11 @@ class EndPage extends React.Component {
               All you have to do is to listen to them and rate the extent <br />
               to which they made you feel on some scales.
               <br /> <br />
-              There are three scales:
+              There are 2 scales:
               <br />
               1) <strong>valence</strong>: on scale of pleasant to unpleasant
               <br />
               2) <strong>arousal</strong>: on scale of sleepy to awake <br />
-              3) <strong>dominance</strong>: on scale of no control to in
-              control
               <br />
               <br />
               <span className={styles.center}>
@@ -724,56 +690,6 @@ class EndPage extends React.Component {
                 <strong>AUDIO TEST: PART II</strong>
               </span>
               <br />
-              When you are asked to rate the sound on the:
-              <br /> <br />{" "}
-              <span className={styles.centerTwo}>
-                <strong>Dominance</strong> scale
-              </span>
-              <br />
-              <RatingSlider.ExampleDom />
-              <br />
-              <br />
-              <strong>Low dominance</strong> sounds (0 on the scale) would be
-              sounds which
-              <br />
-              your emotion makes you feel that you are not in control at all of
-              the situation.
-              <br />
-              <br />
-              In contrast, <strong>high dominance</strong> sounds (100 on the
-              scale) which
-              <br />
-              your emotion makes you feel that you are 100% in control.
-              <br />
-              <br />
-              <span className={styles.center}>
-                <Button
-                  id="left"
-                  className={styles.clc}
-                  onClick={this.handleInstructionsLocal}
-                >
-                  BACK
-                </Button>
-                &nbsp;
-                <Button
-                  id="right"
-                  className={styles.clc}
-                  onClick={this.handleInstructionsLocal}
-                >
-                  NEXT
-                </Button>
-              </span>
-            </p>
-          </div>
-        );
-      } else if (this.state.currentInstructionText === 5) {
-        text = (
-          <div className={styles.main}>
-            <p>
-              <span className={styles.center}>
-                <strong>AUDIO TEST: PART II</strong>
-              </span>
-              <br />
               Remember to keep your headphones on and do not adjust your sound
               settings.
               <br />
@@ -825,4 +741,4 @@ class EndPage extends React.Component {
   }
 }
 
-export default withRouter(EndPage);
+export default withRouter(AudioPilot);

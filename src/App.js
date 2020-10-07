@@ -5,6 +5,7 @@ import StartPage from "./Components/StartPage";
 import HeadphoneCheck from "./Components/HeadphoneCheck";
 import AudioFreq from "./Components/AudioFreq";
 import AudioPilot from "./Components/AudioPilot";
+import Questionnaires from "./Components/Questionnaires";
 import EndPage from "./Components/EndPage";
 
 import "./App.css";
@@ -18,6 +19,7 @@ function App() {
         <Route path="/HeadphoneCheck" component={HeadphoneCheck} exact />
         <Route path="/AudioFreq" component={AudioFreq} exact />
         <Route path="/AudioPilot" component={AudioPilot} exact />
+        <Route path="/Questionnaires" component={Questionnaires} exact />
         <Route path="/EndPage" component={EndPage} exact />
       </Switch>
     </BrowserRouter>
