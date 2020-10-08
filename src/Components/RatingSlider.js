@@ -21,8 +21,8 @@ export const AverSlider = ({ callBackValue, initialValue }) => {
         tooltip="on"
         variant="primary"
       />
-      <span className={styles.left}>very pleasant</span>
-      <span className={styles.right}>very unpleasant</span>
+      <span className={styles.left}>very unpleasant</span>
+      <span className={styles.right}>very pleasant</span>
     </div>
   );
 };
@@ -66,8 +66,8 @@ export const ExampleAver = () => {
         tooltip="on"
         variant="primary"
       />
-      <span className={styles.left}>very pleasant</span>
-      <span className={styles.right}>very unpleasant</span>
+      <span className={styles.left}>very unpleasant</span>
+      <span className={styles.right}>very pleasant</span>
     </div>
   );
 };
