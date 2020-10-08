@@ -10,9 +10,11 @@ import sound4 from "./audio/pilot/morriss_scream_1000.wav";
 import sound5 from "./audio/pilot/pinknoise_08amp_1500.wav";
 import sound6 from "./audio/pilot/zaldPardo_highfreq_1500.wav";
 import sound7 from "./audio/pilot/zaldPardo_metalscreech_1500.wav";
-// import sound8 from "./audio/pilot/250hz_sinetone_08amp_1500.wav";
-// import sound9 from "./audio/pilot/400hz_sinetone_08amp_1500.wav";
-import sound10 from "./audio/pilot/800hz_sinetone_08amp_1500.wav";
+import sound8 from "./audio/pilot/800hz_sinetone_08amp_1500.wav";
+import sound9 from "./audio/pilot/5000hz_sinetone_08amp_1500.wav";
+import sound10 from "./audio/pilot/YangIADSE_scream0276_2000.wav";
+import sound11 from "./audio/pilot/YangIDASE_piano1360_2000.wav";
+import sound12 from "./audio/pilot/YangIDASE_cicada0335_1500.wav";
 
 import * as RatingSlider from "./RatingSlider.js";
 import PlayButton from "./PlayButton";
@@ -114,6 +116,11 @@ class AudioPilot extends React.Component {
       "#0a286a",
       "#e5af2d",
       "#ed3e92",
+      "#84473c",
+      "#6864a1",
+      "#e336c9",
+      "#70ddc9",
+      "#6864ca",
     ];
 
     var sounds = [
@@ -124,7 +131,11 @@ class AudioPilot extends React.Component {
       sound5,
       sound6,
       sound7,
+      sound8,
+      sound9,
       sound10,
+      sound11,
+      sound12,
     ];
 
     var totalSoundNum = sounds.length;
@@ -150,8 +161,8 @@ class AudioPilot extends React.Component {
     var averRatingDef = randomArray(qnNumTotal, 35, 65);
     var arouRatingDef = randomArray(qnNumTotal, 35, 65);
 
-    var sliderFreq2 = sliderFreq - 250;
-    var sliderFreq3 = sliderFreq - 500;
+    var sliderFreq2 = sliderFreq - 500;
+    var sliderFreq3 = sliderFreq - 1000;
 
     var sliderKey = Array.from(Array(qnNumTotal * 2).keys());
 
@@ -163,7 +174,7 @@ class AudioPilot extends React.Component {
 
       soundVol: soundVol,
       qnNumTotal: qnNumTotal,
-      //qnNumTotal: 1,// for debug
+      //qnNumTotal: 1,
       qnNum: 1,
       qnTime: qnTime,
       qnRT: 0,
@@ -187,7 +198,14 @@ class AudioPilot extends React.Component {
       active: false,
       soundFocus: null,
       freqFocus: null,
-      freqSounds: [sliderFreq, sliderFreq2, sliderFreq3],
+      freqSounds: [
+        sliderFreq,
+        sliderFreq2,
+        sliderFreq3,
+        sliderFreq,
+        sliderFreq2,
+        sliderFreq3,
+      ],
       isTonePlaying: false,
       btnDisTone: false,
       btnDisNext: true,
@@ -261,12 +279,15 @@ class AudioPilot extends React.Component {
     console.log("soundbite " + soundbite);
 
     if (freqnIndex.includes(soundIndex)) {
+      var freqArrayIdx = freqnIndex.indexOf(soundIndex);
+      var freqSounds = this.state.freqSounds[freqArrayIdx];
       //if it includes, then it is a frequency noise to be played
       this.setState({
         quizScreen: true,
         qnTime: currTime,
         qnNum: 1,
         playNum: 0,
+        freqFocus: freqSounds,
         active: false,
         volume: volume,
         soundFocus: null,

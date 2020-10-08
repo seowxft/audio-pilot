@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 
-import audioCalib from "./audio/headphone/noise_calib_stim-softer20db.wav";
+import audioCalib from "./audio/headphone/noise_calib_stim.wav";
 import audioCheck1 from "./audio/headphone/antiphase_HC_ISO.wav";
 import audioCheck2 from "./audio/headphone/antiphase_HC_IOS.wav";
 import audioCheck3 from "./audio/headphone/antiphase_HC_SOI.wav";
