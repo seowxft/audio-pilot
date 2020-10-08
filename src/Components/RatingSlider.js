@@ -22,6 +22,7 @@ export const AverSlider = ({ callBackValue, initialValue }) => {
         variant="primary"
       />
       <span className={styles.left}>very unpleasant</span>
+      <span className={styles.centerSlid}>neutral</span>
       <span className={styles.right}>very pleasant</span>
     </div>
   );
@@ -45,6 +46,7 @@ export const ArouSlider = ({ callBackValue, initialValue2 }) => {
         variant="warning"
       />
       <span className={styles.left}>very sleepy</span>
+      <span className={styles.centerSlid}>neutral</span>
       <span className={styles.right}>very awake</span>
     </div>
   );
@@ -67,6 +69,7 @@ export const ExampleAver = () => {
         variant="primary"
       />
       <span className={styles.left}>very unpleasant</span>
+      <span className={styles.centerSlid}>neutral</span>
       <span className={styles.right}>very pleasant</span>
     </div>
   );
@@ -89,6 +92,7 @@ export const ExampleArou = () => {
         variant="warning"
       />
       <span className={styles.left}>very sleepy</span>
+      <span className={styles.centerSlid}>neutral</span>
       <span className={styles.right}>very awake</span>
     </div>
   );

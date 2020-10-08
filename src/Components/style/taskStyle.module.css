@@ -54,6 +54,13 @@ span.right {
   font-size: 14px;
 }
 
+span.centerSlid {
+  display: table;
+  margin: 0 auto;
+  float: center;
+  font-size: 14px;
+}
+
 span.smallfont {
   font-size: 14px;
 }
