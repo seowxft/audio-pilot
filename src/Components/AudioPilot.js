@@ -25,6 +25,41 @@ import Play from "./Play";
 import Pause from "./Pause";
 import { DATABASE_URL } from "./config";
 
+////////////////////////////////////////////////////////////////////////////////
+//Functions
+////////////////////////////////////////////////////////////////////////////////
+//for volume and frequency?, it is in log scale
+function logslider(position, min, max) {
+  // position will be between 0 and 100
+  var minp = 0;
+  var maxp = 100;
+
+  // The bounds of the slider
+  var minv = Math.log(min);
+  var maxv = Math.log(max);
+
+  // calculate adjustment factor
+  var scale = (maxv - minv) / (maxp - minp);
+
+  return Math.exp(minv + scale * (position - minp));
+}
+
+//return slider position
+function logposition(value, min, max) {
+  // position will be between 0 and 100
+  var minp = 0;
+  var maxp = 100;
+
+  // The bounds of the slider
+  var minv = Math.log(min);
+  var maxv = Math.log(max);
+
+  // calculate adjustment factor
+  var scale = (maxv - minv) / (maxp - minp);
+
+  return (Math.log(value) - minv) / scale + minp;
+}
+
 //shuffleSingle
 function shuffleSingle(array) {
   var currentIndex = array.length,
@@ -46,22 +81,6 @@ function shuffleSingle(array) {
   return array;
 }
 
-// Function to shuffle Audio and Answers
-function shuffleDouble(fileNames, trackTitles) {
-  var tempA;
-  var tempB;
-  for (var a = 0; a < fileNames.length; a++) {
-    tempA = fileNames[a];
-    tempB = Math.floor(Math.random() * fileNames.length);
-    fileNames[a] = fileNames[tempB];
-    fileNames[tempB] = tempA;
-
-    tempA = trackTitles[a];
-    trackTitles[a] = trackTitles[tempB];
-    trackTitles[tempB] = tempA;
-  }
-}
-
 //array of certain length within a certain range
 function randomArray(length, min, max) {
   let range = max - min + 1;
@@ -70,25 +89,30 @@ function randomArray(length, min, max) {
   });
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//React component
+////////////////////////////////////////////////////////////////////////////////
 class AudioPilot extends React.Component {
   constructor(props) {
     super(props);
 
     const userID = this.props.location.state.userID;
-    const volume = this.props.location.state.volume * 10;
+    const volume = this.props.location.state.volume;
     const sliderFreq = this.props.location.state.sliderFreq;
-    const volMod = this.props.location.state.volMod;
+    const volumeNotLog = this.props.location.state.volumeNotLog;
 
-    var currentDate = new Date();
+    //  var currentDate = new Date();
 
-    var lowerVol = volume / 2;
-    var FreqVol = volume * volMod;
-    var lowerFreqVol = FreqVol / 2;
+    // Set the volume conditions here
+    var volumeTone = volume / 100;
+    var volumeHalf = logslider(volumeNotLog / 2, 1, 100);
+    var volumeToneHalf = volumeHalf / 100;
 
-    console.log("sliderFreq" + sliderFreq);
-    console.log("volMod" + volMod);
-    console.log("volume" + volume);
-    console.log("FreqVol" + FreqVol);
+    console.log("volumeNotLog: " + volumeNotLog);
+    console.log("volume: " + volume);
+    console.log("volumeTone: " + volumeTone);
+    console.log("volumeHalf: " + volumeHalf);
+    console.log("volumeToneHalf: " + volumeToneHalf);
 
     var varPlayColourTemp = [
       "#d02f33",
@@ -148,10 +172,19 @@ class AudioPilot extends React.Component {
 
     var soundVolTemp = Array(totalSoundNum * multiplier)
       .fill(volume)
-      .concat(Array(totalSoundNum * multiplier).fill(lowerVol));
+      .concat(Array(totalSoundNum * multiplier).fill(volumeHalf));
     var soundVol = soundVolTemp
-      .concat(Array(3 * multiplier).fill(FreqVol))
-      .concat(Array(3 * multiplier).fill(lowerFreqVol));
+      .concat(Array(3 * multiplier).fill(volumeTone))
+      .concat(Array(3 * multiplier).fill(volumeToneHalf));
+
+    var soundVolPer = Array(totalSoundNum * multiplier)
+      .fill(1)
+      .concat(
+        Array(totalSoundNum * multiplier)
+          .fill(0.5)
+          .concat(Array(3 * multiplier).fill(1))
+          .concat(Array(3 * multiplier).fill(0.5))
+      );
 
     var varPlayColour = varPlayColourTemp.concat(varPlayColourTemp);
 
@@ -167,43 +200,36 @@ class AudioPilot extends React.Component {
     var averRatingDef = randomArray(qnNumTotal, 35, 65);
     var arouRatingDef = randomArray(qnNumTotal, 35, 65);
 
-    var sliderFreq2 = sliderFreq - 500;
-    var sliderFreq3 = sliderFreq - 1000;
+    //percentage
+    var sliderFreq2Temp = logposition(sliderFreq, 1000, sliderFreq) * 0.8;
+    var sliderFreq2 = logslider(sliderFreq2Temp, 1000, sliderFreq);
+
+    var sliderFreq3Temp = logposition(sliderFreq, 1000, sliderFreq) * 0.6;
+    var sliderFreq3 = logslider(sliderFreq3Temp, 1000, sliderFreq);
+
+    console.log("sliderFreq: " + sliderFreq);
+    console.log("sliderFreq2: " + sliderFreq2);
+    console.log("sliderFreq3: " + sliderFreq3);
 
     var sliderKey = Array.from(Array(qnNumTotal * 2).keys());
 
     var qnTime = Math.round(performance.now());
 
-    // This will change for the questionnaires going AFTER the main task
+    ////////////////////////////////////////////////////////////////////////////////
+    //Set state
+    ////////////////////////////////////////////////////////////////////////////////
     this.state = {
       userID: userID,
-
-      soundVol: soundVol,
+      currentInstructionText: 1,
+      quizScreen: false,
       qnNumTotal: qnNumTotal,
       //qnNumTotal: 1,
-      qnNum: 1,
-      qnTime: qnTime,
-      qnRT: 0,
-      quizScreen: false,
+
+      //arrays
+      soundVol: soundVol,
+      soundVolPer: soundVolPer,
       sounds: soundArray,
-      currentInstructionText: 1,
-      playNum: 0,
-
-      averRatingDef: averRatingDef,
-      arouRatingDef: arouRatingDef,
-
-      qnNumTotalIndex: qnNumTotalIndex,
-      freqnIndex: freqnIndex,
-      soundIndex: 0,
-      volume: 0,
       sliderKey: sliderKey,
-
-      averRating: null,
-      arouRating: null,
-
-      active: false,
-      soundFocus: null,
-      freqFocus: null,
       freqSounds: [
         sliderFreq,
         sliderFreq2,
@@ -211,12 +237,38 @@ class AudioPilot extends React.Component {
         sliderFreq,
         sliderFreq2,
         sliderFreq3,
+        sliderFreq,
+        sliderFreq2,
+        sliderFreq3,
+        sliderFreq,
+        sliderFreq2,
+        sliderFreq3,
       ],
+      varPlayColour: varPlayColour,
+
+      //by trial variables
+      qnNum: 1,
+      qnNumTotalIndex: qnNumTotalIndex,
+      freqnIndex: freqnIndex,
+      volume: 0,
+      volumePer: 0,
+      soundIndex: 0,
+      qnTime: qnTime,
+      qnRT: 0,
+      playNum: 0,
+      averRatingDef: averRatingDef,
+      arouRatingDef: arouRatingDef,
+      averRating: null,
+      arouRating: null,
+      active: false,
+      soundFocus: null,
+      freqFocus: null,
       isTonePlaying: false,
       btnDisTone: false,
       btnDisNext: true,
       toneLength: 2,
-      varPlayColour: varPlayColour,
+
+      checkBox: false,
     };
 
     /* prevents page from going down when space bar is hit .*/
@@ -232,14 +284,13 @@ class AudioPilot extends React.Component {
     this.iosAudioContextUnlocked = false;
     this.handleClick = this.handleClick.bind(this);
   }
-  /// END PROPS
+  ////////////////////////////////////////////////////////////////////////////////
+  //End constructor and props
+  ////////////////////////////////////////////////////////////////////////////////
 
-  handleClick = () => {
-    if (!this.iosAudioContextUnlocked) this.playEmptyBuffer();
-    var playNum = this.state.playNum + 1;
-    this.setState({ isTonePlaying: true, playNum: playNum });
-  };
-
+  ////////////////////////////////////////////////////////////////////////////////
+  //Function to handle instructions
+  ////////////////////////////////////////////////////////////////////////////////
   // This handles instruction screen within the component
   handleInstructionsLocal(event) {
     var curText = this.state.currentInstructionText;
@@ -252,13 +303,10 @@ class AudioPilot extends React.Component {
     }
   }
 
-  // Toggle on and off
-  // togglePlay() {
-  //   this.setState({ active: !this.state.active }, () => {
-  //     this.state.active ? this.sound.play() : this.sound.pause();
-  //   });
-  // }
-
+  ////////////////////////////////////////////////////////////////////////////////
+  //Functions to toggle playing
+  ////////////////////////////////////////////////////////////////////////////////
+  // for audio bites
   togglePlaying() {
     if (this.state.active === false) {
       var playNum = this.state.playNum + 1;
@@ -267,49 +315,12 @@ class AudioPilot extends React.Component {
 
     this.setState({ active: !this.state.active });
   }
-
-  start_quest() {
-    var currTime = Math.round(performance.now());
-
-    //get index of sound1
-    var qnNumTotalIndex = this.state.qnNumTotalIndex;
-    var soundIndex = qnNumTotalIndex[0];
-    var freqnIndex = this.state.freqnIndex;
-    var volume = this.state.soundVol[soundIndex];
-    var soundbite = this.state.sounds[soundIndex];
-    console.log("qnNumTotalIndex " + qnNumTotalIndex);
-    console.log("freqnIndex " + freqnIndex);
-    console.log("soundIndex " + soundIndex);
-    console.log("soundVol " + this.state.soundVol);
-    console.log("volume " + volume);
-    console.log("soundbite " + soundbite);
-
-    if (freqnIndex.includes(soundIndex)) {
-      var freqArrayIdx = freqnIndex.indexOf(soundIndex);
-      var freqSounds = this.state.freqSounds[freqArrayIdx];
-      //if it includes, then it is a frequency noise to be played
-      this.setState({
-        quizScreen: true,
-        qnTime: currTime,
-        qnNum: 1,
-        playNum: 0,
-        freqFocus: freqSounds,
-        active: false,
-        volume: volume,
-        soundFocus: null,
-      });
-    } else {
-      this.setState({
-        quizScreen: true,
-        qnTime: currTime,
-        qnNum: 1,
-        playNum: 0,
-        active: false,
-        volume: volume,
-        soundFocus: soundbite,
-      });
-    }
-  }
+  // for tones
+  handleClick = () => {
+    if (!this.iosAudioContextUnlocked) this.playEmptyBuffer();
+    var playNum = this.state.playNum + 1;
+    this.setState({ isTonePlaying: true, playNum: playNum });
+  };
 
   playEmptyBuffer = () => {
     // start an empty buffer with an instance of AudioContext
@@ -324,6 +335,68 @@ class AudioPilot extends React.Component {
     this.setState({ isTonePlaying: false });
   };
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Functions to toggle checkbox
+  ////////////////////////////////////////////////////////////////////////////////
+  checkBoxCheck() {
+    this.setState({ checkBox: !this.state.checkBox });
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+  //Start the rating section
+  ////////////////////////////////////////////////////////////////////////////////
+  start_quest() {
+    var currTime = Math.round(performance.now());
+    console.log("soundVolPer: " + this.state.soundVolPer);
+    //get index of sound1
+    var qnNumTotalIndex = this.state.qnNumTotalIndex;
+    var soundIndex = qnNumTotalIndex[0];
+    var freqnIndex = this.state.freqnIndex;
+    var volume = this.state.soundVol[soundIndex];
+    var volumePer = this.state.soundVolPer[soundIndex];
+    var soundbite = this.state.sounds[soundIndex];
+
+    console.log("soundIndex: " + soundIndex);
+    console.log("volume: " + volume);
+    console.log("volumePer: " + volumePer);
+    console.log("freqSoundsAll: " + this.state.freqSounds);
+    console.log("soundVolPer: " + this.state.soundVolPer);
+
+    if (freqnIndex.includes(soundIndex)) {
+      var freqArrayIdx = freqnIndex.indexOf(soundIndex);
+      var freqSounds = this.state.freqSounds[freqArrayIdx];
+      console.log("freqnIndex: " + freqnIndex);
+      console.log("freqArrayIdx: " + freqArrayIdx);
+      console.log("freqSounds: " + freqSounds);
+      //if it includes, then it is a frequency noise to be played
+      this.setState({
+        quizScreen: true,
+        qnTime: currTime,
+        qnNum: 1,
+        playNum: 0,
+        freqFocus: freqSounds,
+        active: false,
+        volume: volume,
+        volumePer: volumePer,
+        soundFocus: null,
+      });
+    } else {
+      console.log("soundbite: " + soundbite);
+      this.setState({
+        quizScreen: true,
+        qnTime: currTime,
+        qnNum: 1,
+        playNum: 0,
+        active: false,
+        volume: volume,
+        volumePer: volumePer,
+        soundFocus: soundbite,
+      });
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //Call back functions for sliders
+  ////////////////////////////////////////////////////////////////////////////////
   callbackAver(callBackValue) {
     this.setState({ averRating: callBackValue });
     if (this.state.averRating !== null && this.state.arouRating !== null) {
@@ -338,6 +411,9 @@ class AudioPilot extends React.Component {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Rating task text
+  ////////////////////////////////////////////////////////////////////////////////
   ratingTask(qnNum) {
     var qnIndx = qnNum - 1;
     var averRatingDef = this.state.averRatingDef[qnIndx];
@@ -346,10 +422,6 @@ class AudioPilot extends React.Component {
     var freqnIndex = this.state.freqnIndex;
     var qnNumTotalIndex = this.state.qnNumTotalIndex;
     var soundIndex = qnNumTotalIndex[qnIndx];
-
-    console.log("freqnIndex: " + freqnIndex);
-    console.log("qnIndx: " + qnIndx);
-    console.log("soundIndex: " + soundIndex);
 
     let question_text = (
       <div className={styles.quiz}>
@@ -366,13 +438,13 @@ class AudioPilot extends React.Component {
         </span>
       </div>
     );
+    let question_text1;
 
     if (freqnIndex.includes(soundIndex)) {
-      var volume = this.state.volume / 100;
       var freqArrayIdx = freqnIndex.indexOf(soundIndex);
       var freqSounds = this.state.freqSounds[freqArrayIdx];
 
-      var question_text1 = (
+      question_text1 = (
         <div>
           <span className={styles.playTri}>
             {this.state.isTonePlaying && !this.state.btnDisTone ? (
@@ -385,7 +457,7 @@ class AudioPilot extends React.Component {
             audioContext={this.audioContext}
             play={this.state.isTonePlaying}
             frequency={freqSounds}
-            volume={volume}
+            volume={this.state.volume}
             length={this.state.toneLength}
             onStop={this.handleToneStop}
           />
@@ -393,7 +465,7 @@ class AudioPilot extends React.Component {
       );
     } else {
       // if the index is not for the frequencies that wee chosen before...
-      var question_text1 = (
+      question_text1 = (
         <div>
           <span className={styles.centerTwo}>
             <PlayButton
@@ -405,7 +477,7 @@ class AudioPilot extends React.Component {
               active={this.state.active}
             />
             <br />
-          </span>{" "}
+          </span>
         </div>
       );
     }
@@ -413,7 +485,7 @@ class AudioPilot extends React.Component {
     let question_text2 = (
       <div className={styles.quiz}>
         <span className={styles.centerTwo}>
-          <strong>Q{this.state.qnNum}a:</strong> How positive/negative is this
+          <strong>Q{this.state.qnNum}a:</strong> How negative/positive is this
           sound?
           <br />
           <br />
@@ -434,6 +506,15 @@ class AudioPilot extends React.Component {
             initialValue2={arouRatingDef}
           />
           <br />
+          <br />
+          <input
+            type="checkbox"
+            checked={this.state.checkBox}
+            onChange={this.checkBoxCheck.bind(this)}
+          />
+          <label>
+            &nbsp;Check this box if you <strong>cannot</strong> hear the sound.
+          </label>
           <br /> <br />
           <span className={styles.smallfont}>
             [Note: You must <strong>drag</strong> (not click) all sliders at
@@ -462,6 +543,9 @@ class AudioPilot extends React.Component {
     );
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Save data
+  ////////////////////////////////////////////////////////////////////////////////
   saveData() {
     var qnRT = Math.round(performance.now()) - this.state.qnTime;
     var userID = this.state.userID;
@@ -474,10 +558,11 @@ class AudioPilot extends React.Component {
       soundFocus: this.state.soundFocus,
       freqFocus: this.state.freqFocus,
       volume: this.state.volume,
+      volumePer: this.state.volumePer,
+      checkBox: this.state.checkBox,
       playNum: this.state.playNum,
       averRating: this.state.averRating,
       arouRating: this.state.arouRating,
-
       averRatingDef: this.state.averRatingDef[this.state.qnNum - 1],
       arouRatingDef: this.state.arouRatingDef[this.state.qnNum - 1],
     };
@@ -502,6 +587,9 @@ class AudioPilot extends React.Component {
     );
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Next quiz
+  ////////////////////////////////////////////////////////////////////////////////
   quizNext() {
     var qnNum = this.state.qnNum + 1;
     var qnTime = Math.round(performance.now()); //for the next question
@@ -511,6 +599,11 @@ class AudioPilot extends React.Component {
     var freqnIndex = this.state.freqnIndex;
     var soundbite = this.state.sounds[soundIndex];
     var volume = this.state.soundVol[soundIndex];
+    var volumePer = this.state.soundVolPer[soundIndex];
+
+    console.log("soundIndex: " + soundIndex);
+    console.log("volume: " + volume);
+    console.log("volumePer: " + volumePer);
 
     this.useEffect();
 
@@ -518,32 +611,41 @@ class AudioPilot extends React.Component {
       var freqArrayIdx = freqnIndex.indexOf(soundIndex);
       var freqSounds = this.state.freqSounds[freqArrayIdx];
       //if it is a frequencysound
+
+      console.log("freqnIndex: " + freqnIndex);
+      console.log("freqArrayIdx: " + freqArrayIdx);
+      console.log("freqSounds: " + this.state.freqSounds);
+      console.log("freqSoundsIndiv: " + freqSounds);
+
       this.setState({
         qnNum: qnNum,
         qnTime: qnTime,
         soundIndex: soundIndex,
         freqFocus: freqSounds,
         volume: volume,
+        volumePer: volumePer,
         playNum: 0,
         averRating: null,
         arouRating: null,
-
+        checkBox: false,
         btnDisNext: true,
         btnDisTone: false,
         active: false,
         soundFocus: null,
       });
     } else {
+      console.log("soundbite: " + soundbite);
       this.setState({
         qnNum: qnNum,
         qnTime: qnTime,
         soundIndex: soundIndex,
         freqFocus: null,
         volume: volume,
+        volumePer: volumePer,
         playNum: 0,
         averRating: null,
         arouRating: null,
-
+        checkBox: false,
         btnDisNext: true,
         btnDisTone: false,
         active: false,
@@ -552,17 +654,24 @@ class AudioPilot extends React.Component {
     }
   }
 
-  // Mount the component to call the BACKEND and GET the information
+  ////////////////////////////////////////////////////////////////////////////////
+  //Component Mount
+  ////////////////////////////////////////////////////////////////////////////////
   componentDidMount() {
     window.scrollTo(0, 0);
     this.audioContext = new AudioContext();
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Function to keep page on top
+  ////////////////////////////////////////////////////////////////////////////////
   useEffect() {
     window.scrollTo(0, 0);
   }
 
-  // Push to next page
+  ////////////////////////////////////////////////////////////////////////////////
+  //Push to next section
+  ////////////////////////////////////////////////////////////////////////////////
   redirectToTarget() {
     this.props.history.push({
       pathname: `/Questionnaires`,
@@ -570,6 +679,9 @@ class AudioPilot extends React.Component {
     });
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Render time!
+  ////////////////////////////////////////////////////////////////////////////////
   render() {
     let text;
     if (this.state.quizScreen === false) {

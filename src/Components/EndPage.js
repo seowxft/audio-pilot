@@ -7,7 +7,7 @@ class EndPage extends React.Component {
     super(props);
 
     const userID = this.props.location.state.userID;
-    var currentDate = new Date();
+    // var currentDate = new Date();
 
     // This will change for the questionnaires going AFTER the main task
     this.state = {

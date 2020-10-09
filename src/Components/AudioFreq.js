@@ -12,36 +12,81 @@ import Play from "./Play";
 import Pause from "./Pause";
 import { DATABASE_URL } from "./config";
 
+////////////////////////////////////////////////////////////////////////////////
+//Functions
+////////////////////////////////////////////////////////////////////////////////
+//for volume and frequency?, it is in log scale
+function logslider(position, min, max) {
+  // position will be between 0 and 100
+  var minp = 0;
+  var maxp = 100;
+
+  // The bounds of the slider
+  var minv = Math.log(min);
+  var maxv = Math.log(max);
+
+  // calculate adjustment factor
+  var scale = (maxv - minv) / (maxp - minp);
+
+  return Math.exp(minv + scale * (position - minp));
+}
+
+//return slider position
+function logposition(value, min, max) {
+  // position will be between 0 and 100
+  var minp = 0;
+  var maxp = 100;
+
+  // The bounds of the slider
+  var minv = Math.log(min);
+  var maxv = Math.log(max);
+
+  // calculate adjustment factor
+  var scale = (maxv - minv) / (maxp - minp);
+
+  return (Math.log(value) - minv) / scale + minp;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//React component
+////////////////////////////////////////////////////////////////////////////////
 class AudioFreq extends React.Component {
   constructor(props) {
     super(props);
 
     const userID = this.props.location.state.userID;
     const volume = this.props.location.state.volume;
-    var currentDate = new Date();
+    const volumeNotLog = this.props.location.state.volumeNotLog;
+    // var currentDate = new Date();
     var currTime = Math.round(performance.now());
-    var volMod = 0.1;
 
-    var adjvolume = volMod * volume;
+    console.log("Vol(Lg) from headphone: " + volume);
+    console.log("Vol(nLg) from headphone: " + volumeNotLog);
 
-    console.log("volume" + volume);
-    console.log("adjvolume" + adjvolume);
-    // This will change for the questionnaires going AFTER the main task
+    //React-tone.js is between 0 (silent) and 1 (full) for volume
+    var toneVol = volume / 100;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //Set states
+    ////////////////////////////////////////////////////////////////////////////////
     this.state = {
       userID: userID,
-
-      volume: adjvolume,
+      volume: volume,
+      volumeNotLog: volumeNotLog,
+      toneVol: toneVol,
       qnTime: currTime,
       qnRT: 0,
       qnNumTotal: 3,
       qnNum: 0,
-      volMod: volMod,
       quizScreen: false,
       btnDisTone: false,
       btnDisNext: true,
       isTonePlaying: false,
       sliderFreq: null,
-      sliderFreqDefault: 800,
+      sliderFreqDefault: 1000,
+      sliderFreqPos: null,
+      sliderFreqDefaultPos: null,
+      sliderFreqSlidMin: null,
       freqThres: [0, 0, 0],
       freqThresIndiv: null,
       toneLength: 2,
@@ -59,8 +104,13 @@ class AudioFreq extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.redirectToTarget = this.redirectToTarget.bind(this);
   }
-  /// END PROPS
+  ////////////////////////////////////////////////////////////////////////////////
+  // End constructor and props
+  ////////////////////////////////////////////////////////////////////////////////
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Start the frequency quiz
+  ////////////////////////////////////////////////////////////////////////////////
   start_quest() {
     var currTime = Math.round(performance.now());
 
@@ -78,31 +128,98 @@ class AudioFreq extends React.Component {
     );
   }
 
-  useEffect() {
-    window.scrollTo(0, 0);
-  }
+  ////////////////////////////////////////////////////////////////////////////////
+  //Function to play frequency
+  ////////////////////////////////////////////////////////////////////////////////
+  playEmptyBuffer = () => {
+    // start an empty buffer with an instance of AudioContext
+    const buffer = this.audioContext.createBuffer(1, 1, 22050);
+    const node = this.audioContext.createBufferSource();
+    node.buffer = buffer;
+    node.start(0);
+    this.iosAudioContextUnlocked = true;
+  };
 
-  // callbackFreq(callBackValue) {
-  //   //on a scale between 1-100, between hearing range of 800 to 20000
-  //   var sliderFreq = parseInt(callBackValue);
-  //   this.setState({ sliderFreq: sliderFreq });
-  //
-  //   console.log(sliderFreq);
-  //   if (this.state.sliderFreq !== this.state.sliderFreqDefault) {
-  //     this.setState({ btnDisNext: false });
-  //   }
-  // }
-
+  ////////////////////////////////////////////////////////////////////////////////
+  //Toggle frequency playing
+  ////////////////////////////////////////////////////////////////////////////////
   handleClick = () => {
     if (!this.iosAudioContextUnlocked) this.playEmptyBuffer();
-
     this.setState({ isTonePlaying: true });
   };
 
-  onSliderChange = (value) => {
-    console.log(value);
+  ////////////////////////////////////////////////////////////////////////////////
+  //Function to stop tone from playing
+  ////////////////////////////////////////////////////////////////////////////////
+  handleToneStop = () => {
+    this.setState({ isTonePlaying: false });
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //(Includes first qn) Move on to next frequency adjustment slider
+  ////////////////////////////////////////////////////////////////////////////////
+  quizNext() {
+    this.useEffect();
+    var qnNum = this.state.qnNum + 1;
+    var qnTime = Math.round(performance.now()); //for the next question
+    let sliderFreqDefault;
+    let sliderFreqSlidMin;
+
+    if (qnNum > 1) {
+      //If it is the second or third question, I need to change the sliderFreqDefault
+      //Now it resets to what the prev set frequency was
+      sliderFreqDefault = this.state.sliderFreq;
+      var min = sliderFreqDefault / 2;
+      sliderFreqSlidMin = sliderFreqDefault - min;
+    } else {
+      sliderFreqDefault = this.state.sliderFreqDefault;
+      sliderFreqSlidMin = sliderFreqDefault - 300;
+    }
+
+    var sliderFreqPos = logposition(
+      sliderFreqDefault,
+      sliderFreqSlidMin,
+      22000
+    );
+
+    var sliderFreq = logslider(sliderFreqPos, sliderFreqSlidMin, 22000);
+
+    console.log("qnNum: " + qnNum);
+    console.log("sliderFreqPos: " + sliderFreqPos);
+    console.log("sliderFreq: " + sliderFreq);
+    console.log("sliderFreqSlidMin: " + sliderFreqSlidMin);
+
     this.setState({
-      sliderFreq: value,
+      qnNum: qnNum,
+      qnTime: qnTime,
+      btnDisTone: false,
+      btnDisNext: true,
+      freqThresIndiv: null,
+      sliderFreqPos: sliderFreqPos,
+      sliderFreqDefaultPos: sliderFreqPos,
+      sliderFreq: sliderFreq,
+      sliderFreqDefault: sliderFreqDefault,
+      sliderFreqSlidMin: sliderFreqSlidMin,
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //Record value on freqencyslider
+  ////////////////////////////////////////////////////////////////////////////////
+  onSliderChange = (freqPos) => {
+    //I get the freqency slider num )this should be between 1 to 100
+    //Also convert to actual freqency for the tone
+    var sliderFreq = Math.round(
+      logslider(freqPos, this.state.sliderFreqSlidMin, 22000)
+    );
+
+    // console.log("sliderFreqPos: " + freqPos);
+    // console.log("sliderFreq: " + sliderFreq);
+    // console.log("sliderFreqDefault: " + this.state.sliderFreqDefault);
+
+    this.setState({
+      sliderFreqPos: freqPos,
+      sliderFreq: sliderFreq,
     });
 
     if (this.state.sliderFreq !== this.state.sliderFreqDefault) {
@@ -110,9 +227,11 @@ class AudioFreq extends React.Component {
     }
   };
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Frequency adjusting task
+  ////////////////////////////////////////////////////////////////////////////////
   ratingTask(qnNum) {
-    var volume = this.state.volume / 100;
-    console.log("Playing at " + volume);
+    //console.log("Tone Vol: " + this.state.toneVol);
 
     let question_text1 = (
       <div className={styles.quiz}>
@@ -154,12 +273,12 @@ class AudioFreq extends React.Component {
             audioContext={this.audioContext}
             play={this.state.isTonePlaying}
             frequency={this.state.sliderFreq}
-            volume={volume}
+            volume={this.state.toneVol}
             length={this.state.toneLength}
             onStop={this.handleToneStop}
           />
           <br />
-          Using the slider below, adjust it until you can only{" "}
+          Using the slider below, adjust it (left and right) until you can only{" "}
           <strong>just</strong> hear the tone comfortably.
           <br />
           You can play the tone as many times as you like.
@@ -194,8 +313,8 @@ class AudioFreq extends React.Component {
             {question_text3}
             <div className={styles.shortSlider}>
               <Slider
-                defaultValue={this.state.sliderFreqDefault}
-                value={this.state.sliderFreq}
+                defaultValue={this.state.sliderFreqDefaultPos}
+                value={this.state.sliderFreqPos}
                 trackStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
                 handleStyle={{
                   borderColor: "#00BFFF",
@@ -206,8 +325,8 @@ class AudioFreq extends React.Component {
                   backgroundColor: "#00BFFF",
                 }}
                 railStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
-                min={this.state.sliderFreqDefault}
-                max={24000}
+                min={0}
+                max={100}
                 onChange={this.onSliderChange.bind(this)}
               />
             </div>
@@ -223,8 +342,8 @@ class AudioFreq extends React.Component {
 
             <div className={styles.shortSlider}>
               <Slider
-                defaultValue={this.state.sliderFreqDefault - 3000}
-                value={this.state.sliderFreq}
+                defaultValue={this.state.sliderFreqDefaultPos}
+                value={this.state.sliderFreqPos}
                 trackStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
                 reverse
                 handleStyle={{
@@ -236,8 +355,8 @@ class AudioFreq extends React.Component {
                   backgroundColor: "#9000FF",
                 }}
                 railStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
-                min={this.state.sliderFreqDefault - 3000}
-                max={24000}
+                min={0}
+                max={100}
                 onChange={this.onSliderChange.bind(this)}
               />
             </div>
@@ -252,8 +371,8 @@ class AudioFreq extends React.Component {
             {question_text3}
             <div className={styles.shortSlider}>
               <Slider
-                defaultValue={this.state.sliderFreqDefault - 3000}
-                value={this.state.sliderFreq}
+                defaultValue={this.state.sliderFreqDefaultPos}
+                value={this.state.sliderFreqPos}
                 trackStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
                 handleStyle={{
                   borderColor: "#FF8F00",
@@ -264,8 +383,8 @@ class AudioFreq extends React.Component {
                   backgroundColor: "#FF8F00",
                 }}
                 railStyle={{ backgroundColor: "#D9D9D9", height: 10 }}
-                min={this.state.sliderFreqDefault - 3000}
-                max={24000}
+                min={0}
+                max={100}
                 onChange={this.onSliderChange.bind(this)}
               />
             </div>
@@ -278,16 +397,18 @@ class AudioFreq extends React.Component {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Save the frequency chosen
+  ////////////////////////////////////////////////////////////////////////////////
   saveQuizData() {
-    // var fileID = this.state.fileID;
     var qnRT = Math.round(performance.now()) - this.state.qnTime;
     var freqThres = this.state.freqThres;
     freqThres[this.state.qnNum - 1] = this.state.sliderFreq;
     var freqThresIndiv = this.state.sliderFreq;
     var userID = this.state.userID;
 
-    console.log("qnNum " + this.state.qnNum);
-    console.log("freqThres " + freqThres);
+    console.log("Qn Num: " + this.state.qnNum);
+    console.log("Freq Thres: " + freqThres);
 
     this.setState({
       qnRT: qnRT,
@@ -300,7 +421,8 @@ class AudioFreq extends React.Component {
       qnTime: this.state.qnTime,
       qnRT: qnRT,
       qnNum: this.state.qnNum,
-      adjvol: this.state.volume / this.state.volMod,
+      volume: this.state.volume,
+      volumeNotLog: this.state.volumeNotLog,
       freqThresIndiv: freqThresIndiv,
       sliderFreqDefault: this.state.sliderFreqDefault,
     };
@@ -327,62 +449,39 @@ class AudioFreq extends React.Component {
     );
   }
 
-  quizNext() {
-    this.useEffect();
-    var qnNum = this.state.qnNum + 1;
-    var qnTime = Math.round(performance.now()); //for the next question
-    var sliderFreqDefault = this.state.freqThresIndiv - 1000;
-
-    this.setState({
-      qnNum: qnNum,
-      qnTime: qnTime,
-      btnDisTone: false,
-      btnDisNext: true,
-      freqThresIndiv: null,
-      sliderFreq: sliderFreqDefault,
-      sliderFreqDefault: sliderFreqDefault,
-    });
-
-    if (qnNum > this.state.qnNumTotal) {
-      var adjvolume = this.state.volume / this.state.volMod;
-      console.log("qnNum: " + qnNum);
-      console.log("final vol: " + adjvolume);
-      this.setState({ volume: adjvolume });
-    }
+  ////////////////////////////////////////////////////////////////////////////////
+  //Function to ensure page always starts from the top
+  ////////////////////////////////////////////////////////////////////////////////
+  useEffect() {
+    window.scrollTo(0, 0);
   }
 
-  playEmptyBuffer = () => {
-    // start an empty buffer with an instance of AudioContext
-    const buffer = this.audioContext.createBuffer(1, 1, 22050);
-    const node = this.audioContext.createBufferSource();
-    node.buffer = buffer;
-    node.start(0);
-    this.iosAudioContextUnlocked = true;
-  };
-
-  handleToneStop = () => {
-    this.setState({ isTonePlaying: false });
-  };
-
-  // Mount the component to call the BACKEND and GET the information
+  ////////////////////////////////////////////////////////////////////////////////
+  //Mount component
+  ////////////////////////////////////////////////////////////////////////////////
   componentDidMount() {
     window.scrollTo(0, 0);
     this.audioContext = new AudioContext();
   }
 
-  // Push to next page
+  ////////////////////////////////////////////////////////////////////////////////
+  //Move to next section of the task
+  ////////////////////////////////////////////////////////////////////////////////
   redirectToTarget() {
     this.props.history.push({
       pathname: `/AudioPilot`,
       state: {
         userID: this.state.userID,
         volume: this.state.volume,
+        volumeNotLog: this.state.volumeNotLog,
         sliderFreq: this.state.sliderFreq,
-        volMod: this.state.volMod,
       },
     });
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Render time!
+  ////////////////////////////////////////////////////////////////////////////////
   render() {
     let text;
     if (this.state.quizScreen === false) {

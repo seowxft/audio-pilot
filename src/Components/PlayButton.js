@@ -104,7 +104,7 @@ class PlayButton extends React.Component {
     if (justStartedPlaying) {
       this.setupAudio();
       this.triggerPlayAudio();
-      console.log("triggered");
+      // console.log("triggered");
     } else if (justStoppedPlaying) {
       this.triggerStopAudio();
     }
@@ -112,7 +112,7 @@ class PlayButton extends React.Component {
 
   triggerPlayAudio() {
     this.audio.play();
-    console.log("playing");
+    // console.log("playing");
     this.animateIcon("stop");
     this.setState({ progress: 0, active: true, finish: false }, () =>
       this.updateProgress()
@@ -135,8 +135,8 @@ class PlayButton extends React.Component {
   clickHandler(event) {
     //if played once then stop
     // console.log(event);
-    console.log(event.currentTarget);
-    console.log(event.target);
+    // console.log(event.currentTarget);
+    // console.log(event.target);
     // console.log(event.target.parentNode);
     // if (event.target.parentNode) {
     if (this.props.playNum) {
@@ -145,7 +145,7 @@ class PlayButton extends React.Component {
       this.setState({ active: !this.state.active });
 
       this.state.active ? this.props.stop() : this.props.play();
-      console.log("state " + this.state.active);
+      // console.log("state " + this.state.active);
       // if (this.props.active) {
       //   this.triggerPlayAudio();
       // } else if (!this.props.active) {

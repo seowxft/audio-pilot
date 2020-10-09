@@ -17,6 +17,25 @@ import styles from "./style/taskStyle.module.css";
 import PlayButton from "./PlayButton";
 import { DATABASE_URL } from "./config";
 
+////////////////////////////////////////////////////////////////////////////////
+//Functions
+////////////////////////////////////////////////////////////////////////////////
+//for volume, it is in log scale
+function logslider(position) {
+  // position will be between 0 and 100
+  var minp = 0;
+  var maxp = 100;
+
+  // The bounds of the slider
+  var minv = Math.log(1);
+  var maxv = Math.log(100);
+
+  // calculate adjustment factor
+  var scale = (maxv - minv) / (maxp - minp);
+
+  return Math.exp(minv + scale * (position - minp));
+}
+
 //shuffleSingle
 function shuffleSingle(array) {
   var currentIndex = array.length,
@@ -54,8 +73,9 @@ function shuffleDouble(fileNames, trackTitles) {
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Start react component
+////////////////////////////////////////////////////////////////////////////////
+//React Component
+////////////////////////////////////////////////////////////////////////////////
 class HeadphoneCheck extends React.Component {
   constructor(props) {
     super(props);
@@ -84,7 +104,12 @@ class HeadphoneCheck extends React.Component {
     shuffleSingle(varPlayColour);
     shuffleDouble(quizSounds, quizAns);
     var currTime = Math.round(performance.now());
+    var volNtLog = 80;
+    var vol = logslider(80);
 
+    ////////////////////////////////////////////////////////////////////////////////
+    //Set state
+    ////////////////////////////////////////////////////////////////////////////////
     this.state = {
       userID: userID,
       checkStage: 1,
@@ -111,7 +136,8 @@ class HeadphoneCheck extends React.Component {
       varPlayColour: varPlayColour,
       calibSound: audioCalib,
       quizSounds: quizSounds,
-      volume: 80,
+      volume: vol, // this is what i feed into the audio
+      volumeNotLog: volNtLog, //this is what you feed into the slider and convert back
       checkTry: 1,
     };
 
@@ -128,12 +154,13 @@ class HeadphoneCheck extends React.Component {
     this.redirectToBack = this.redirectToBack.bind(this);
     this.display_question = this.display_question.bind(this);
   }
-  // Constructor and props END
+  ////////////////////////////////////////////////////////////////////////////////
+  //Constructor and props end
+  ////////////////////////////////////////////////////////////////////////////////
 
-  ///////////////////////////////////////////////////////////////////////////////
-  //
-
-  // This handles instruction screen within the component
+  ////////////////////////////////////////////////////////////////////////////////
+  //Instruction Screen
+  ////////////////////////////////////////////////////////////////////////////////
   handleInstructionsLocal(event) {
     var curText = this.state.currentInstructionText;
     var whichButton = event.currentTarget.id;
@@ -145,38 +172,9 @@ class HeadphoneCheck extends React.Component {
     }
   }
 
-  // Start the audio test
-  start_quest() {
-    var currTime = Math.round(performance.now());
-    console.log("quizAns: " + this.state.quizAns);
-    this.setState({
-      quizScreen: true,
-      qnNum: 1,
-      qnTime: currTime,
-      playOnceOnly: true, //change this to make sure sounds can only play once for the quiz
-      playNum: false,
-      active: false,
-    });
-  }
-
-  // Reset if fail the calib
-  resetSounds() {
-    var quizSounds = this.state.quizSounds;
-    var quizAns = this.state.quizAns;
-    var varPlayColour = this.statevar.PlayColour;
-
-    shuffleSingle(varPlayColour);
-    shuffleDouble(quizSounds, quizAns);
-
-    this.setState({
-      quizSounds: quizSounds,
-      quizAns: quizAns,
-      varPlayColour: varPlayColour,
-      quizSoundsIndiv: null,
-      quizAnsIndiv: null,
-    });
-  }
-
+  ////////////////////////////////////////////////////////////////////////////////
+  //After audio calibration, move to headphone check instruction screen
+  ////////////////////////////////////////////////////////////////////////////////
   nextStage() {
     this.setState({
       checkStage: 2,
@@ -185,9 +183,29 @@ class HeadphoneCheck extends React.Component {
     });
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Start headphone check
+  ////////////////////////////////////////////////////////////////////////////////
+  start_quest() {
+    var currTime = Math.round(performance.now());
+    console.log("quizAns: " + this.state.quizAns);
+
+    this.setState({
+      quizScreen: true,
+      qnNum: 1,
+      qnTime: currTime,
+      playOnceOnly: true, //change this to true make sure sounds can only play once for the quiz
+      playNum: false,
+      active: false,
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //Toggle audio playing
+  ////////////////////////////////////////////////////////////////////////////////
   togglePlaying() {
-    console.log("playNum :" + this.state.playNum);
-    console.log("active :" + this.state.active);
+    console.log("PlayNum :" + this.state.playNum);
+    console.log("Playing :" + this.state.active);
 
     if (this.state.playOnceOnly === true) {
       //if this is a section where playOnceOnly happens then
@@ -204,16 +222,36 @@ class HeadphoneCheck extends React.Component {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Callback functions to set volume before headphone check
+  ////////////////////////////////////////////////////////////////////////////////
+
   callbackVol(callBackValue) {
-    this.setState({ volume: callBackValue });
+    var volume = callBackValue;
+
+    if (volume > 100) {
+      volume = 100;
+    } else if (volume < 0) {
+      volume = 1;
+    }
+
+    this.setState({ volume: volume });
+    console.log("Vol in Log: " + volume);
   }
 
-  //Display question
+  callbackVolNotLog(callBackValueNotLog) {
+    var volumeNotLog = callBackValueNotLog;
+
+    this.setState({ volumeNotLog: volumeNotLog });
+    console.log("vol not in Log: " + volumeNotLog);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //Question display for headphone check
+  ////////////////////////////////////////////////////////////////////////////////
   display_question(qnNum) {
     //comment this out after debuging, it will make sure that you can only cont when after you play the sound
-    //  document.addEventListener("keydown", this._handleKeyDownNumbers);
-    console.log("playOnceOnly: " + this.state.playOnceOnly);
-
+    document.addEventListener("keydown", this._handleKeyDownNumbers);
     var audioBite = this.state.quizSounds[qnNum - 1];
 
     return (
@@ -262,7 +300,9 @@ class HeadphoneCheck extends React.Component {
     );
   }
 
-  // After each question, move to the next one
+  ////////////////////////////////////////////////////////////////////////////////
+  //When answer the quiz, record and calculate quiz score and key presses
+  ////////////////////////////////////////////////////////////////////////////////
   next_question(pressed, time_pressed) {
     this.useEffect();
     document.removeEventListener("keydown", this._handleKeyDownNumbers);
@@ -296,8 +336,8 @@ class HeadphoneCheck extends React.Component {
       qnCorrIndiv = 0;
     }
 
-    console.log("qnCorr: " + qnCorr);
-    console.log("quizSum: " + quizSum);
+    console.log("Qn correct: " + qnCorr);
+    console.log("Total quiz score: " + quizSum);
     qnPressKey = pressed;
 
     quizPer = (qnNum / qnNumTotal) * 100;
@@ -320,12 +360,15 @@ class HeadphoneCheck extends React.Component {
     );
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Save data
+  ////////////////////////////////////////////////////////////////////////////////
   saveData() {
     var userID = this.state.userID;
     var currTime = Math.round(performance.now());
-
+    let quizbehaviour;
     if (this.state.checkStage === 1) {
-      var quizbehaviour = {
+      quizbehaviour = {
         userID: this.state.userID,
         checkTry: this.state.checkTry,
         checkStage: this.state.checkStage,
@@ -333,6 +376,7 @@ class HeadphoneCheck extends React.Component {
         qnRT: currTime - this.state.qnRT,
         qnNum: 1,
         volume: this.state.volume,
+        volumeNotLog: this.state.volumeNotLog,
         quizSoundsIndiv: null,
         quizAnsIndiv: null,
         qnPressKey: null,
@@ -357,7 +401,7 @@ class HeadphoneCheck extends React.Component {
         10
       );
     } else {
-      var quizbehaviour = {
+      quizbehaviour = {
         userID: this.state.userID,
         checkTry: this.state.checkTry,
         checkStage: this.state.checkStage,
@@ -365,6 +409,7 @@ class HeadphoneCheck extends React.Component {
         qnRT: this.state.qnRT,
         qnNum: this.state.qnNum,
         volume: this.state.volume,
+        volumeNotLog: this.state.volumeNotLog,
         quizSoundsIndiv: this.state.quizSounds[this.state.qnNum - 1],
         quizAnsIndiv: this.state.quizAns[this.state.qnNum - 1],
         qnPressKey: this.state.qnPressKey,
@@ -391,6 +436,9 @@ class HeadphoneCheck extends React.Component {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //Move to next question for headphone check
+  ////////////////////////////////////////////////////////////////////////////////
   nextQn() {
     var qnNum = this.state.qnNum + 1;
     var currTime = Math.round(performance.now());
@@ -407,9 +455,8 @@ class HeadphoneCheck extends React.Component {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-
-  //Handle keyboard presses
-
+  //Functions for keypresses
+  ////////////////////////////////////////////////////////////////////////////////
   _handleKeyDownNumbers = (event) => {
     var pressed;
     var time_pressed;
@@ -438,14 +485,11 @@ class HeadphoneCheck extends React.Component {
   };
 
   ////////////////////////////////////////////////////////////////////////////////
-
-  // Mount the component to call the BACKEND and GET the information
-  componentDidMount() {
-    window.scrollTo(0, 0);
-  }
-
+  //Reset from beginning if fail headphone check
+  ////////////////////////////////////////////////////////////////////////////////
   redirectToBack() {
     var checkTry = this.state.checkTry + 1;
+    var vol = logslider(80);
     this.setState({
       checkTry: checkTry,
       checkStage: 1,
@@ -457,7 +501,8 @@ class HeadphoneCheck extends React.Component {
       qnPressKey: [],
       qnCorr: [],
       active: false,
-      volume: 80,
+      volume: vol,
+      volumeNotLog: 80,
     });
     setTimeout(
       function () {
@@ -467,19 +512,57 @@ class HeadphoneCheck extends React.Component {
     );
   }
 
-  useEffect() {
-    window.scrollTo(0, 0);
-  }
+  ////////////////////////////////////////////////////////////////////////////////
+  //If fail headphone check, reset the sounds for another try
+  ////////////////////////////////////////////////////////////////////////////////
+  resetSounds() {
+    var quizSounds = this.state.quizSounds;
+    var quizAns = this.state.quizAns;
+    var varPlayColour = this.statevar.PlayColour;
 
-  redirectToTarget() {
-    this.props.history.push({
-      pathname: `/AudioFreq`,
-      state: { userID: this.state.userID, volume: this.state.volume },
+    shuffleSingle(varPlayColour);
+    shuffleDouble(quizSounds, quizAns);
+
+    this.setState({
+      quizSounds: quizSounds,
+      quizAns: quizAns,
+      varPlayColour: varPlayColour,
+      quizSoundsIndiv: null,
+      quizAnsIndiv: null,
     });
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // Render START
+  //Function to ensure that the page starts from the top
+  ////////////////////////////////////////////////////////////////////////////////
+  useEffect() {
+    window.scrollTo(0, 0);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //Component mount
+  ////////////////////////////////////////////////////////////////////////////////
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //Move to next section of task
+  ////////////////////////////////////////////////////////////////////////////////
+  redirectToTarget() {
+    this.props.history.push({
+      pathname: `/AudioFreq`,
+      state: {
+        userID: this.state.userID,
+        volume: this.state.volume,
+        volumeNotLog: this.state.volumeNotLog,
+      },
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //Rendering
+  ////////////////////////////////////////////////////////////////////////////////
   render() {
     let text;
 
@@ -528,7 +611,7 @@ class HeadphoneCheck extends React.Component {
               <br />
               Great! First, we need to set your sound settings to an appropriate
               level. <br />
-              Please set your computer system volume level to about 30% of the
+              Please set your computer system volume level to 30% of the
               maximum.
               <br /> <br />
               Now, click the play button below.
@@ -553,6 +636,7 @@ class HeadphoneCheck extends React.Component {
               <span className={styles.center}>
                 <SliderVol.SliderVol
                   callBackValue={this.callbackVol.bind(this)}
+                  callBackValueNotLog={this.callbackVolNotLog.bind(this)}
                 />
               </span>
               <br />
@@ -644,10 +728,10 @@ class HeadphoneCheck extends React.Component {
                   <br />
                   <br />
                   Please ensure that you are wearing headphones/earphones and
-                  turn up your audio volume.
+                  calibrate a louder audio volume.
                   <br />
                   <br />
-                  Click the button below to calibrate your sound settings again.
+                  Click the button below to calibrate the volume again.
                   <br />
                   <br />
                   <span className={styles.center}>

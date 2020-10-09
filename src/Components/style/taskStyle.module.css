@@ -6,7 +6,6 @@
   margin: 50px;
   color: black;
   font-size: 18px;
-  /* font-family: "Comic Sans MS", "Comic Sans", cursive; */
 }
 
 .quiz {
@@ -17,21 +16,11 @@
   margin: 40px;
   color: black;
   font-size: 18px;
-  /* font-family: "Comic Sans MS", "Comic Sans", cursive; */
 }
 
 .shortSlider {
   width: 550px;
   margin: 0 auto;
-}
-
-Button.clc {
-  border-color: #ffffff;
-}
-
-Button.black {
-  background-color: #000000;
-  border-color: #ffffff;
 }
 
 span.center {
@@ -40,28 +29,30 @@ span.center {
   font-size: 25px;
 }
 
-span.left {
-  display: table;
-  margin: 0 auto;
+span.alignleft {
   float: left;
+  width: 33.33333%;
+  text-align: left;
+  font-size: 14px;
+}
+span.aligncenter {
+  float: left;
+  width: 33.33333%;
+  text-align: center;
+  font-size: 14px;
+}
+span.alignright {
+  float: left;
+  width: 33.33333%;
+  text-align: right;
   font-size: 14px;
 }
 
-span.right {
-  display: table;
-  margin: 0 auto;
-  float: right;
+​span.smallfont {
   font-size: 14px;
 }
 
-span.centerSlid {
-  display: table;
-  margin: 0 auto;
-  float: center;
-  font-size: 14px;
-}
-
-span.smallfont {
+label {
   font-size: 14px;
 }
 
@@ -74,6 +65,10 @@ span.playTri {
 span.centerTwo {
   display: table;
   margin: 0 auto;
+}
+
+Button.clc {
+  border-color: #ffffff;
 }
 
 Button:focus,

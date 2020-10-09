@@ -19,11 +19,13 @@ export const AverSlider = ({ callBackValue, initialValue }) => {
         }}
         tooltipLabel={(currentValue) => `${currentValue}`}
         tooltip="on"
+        tooltipPlacement="top"
         variant="primary"
       />
-      <span className={styles.left}>very unpleasant</span>
-      <span className={styles.centerSlid}>neutral</span>
-      <span className={styles.right}>very pleasant</span>
+
+      <span className={styles.alignleft}>very unpleasant</span>
+      <span className={styles.aligncenter}>neutral</span>
+      <span className={styles.alignright}>very pleasant</span>
     </div>
   );
 };
@@ -43,11 +45,12 @@ export const ArouSlider = ({ callBackValue, initialValue2 }) => {
         }}
         tooltipLabel={(currentValue) => `${currentValue}`}
         tooltip="on"
+        tooltipPlacement="top"
         variant="warning"
       />
-      <span className={styles.left}>very sleepy</span>
-      <span className={styles.centerSlid}>neutral</span>
-      <span className={styles.right}>very awake</span>
+      <span className={styles.alignleft}>very sleepy</span>
+      <span className={styles.aligncenter}>neutral</span>
+      <span className={styles.alignright}>very awake</span>
     </div>
   );
 };
@@ -66,11 +69,12 @@ export const ExampleAver = () => {
         }}
         tooltipLabel={(currentValue) => `${currentValue}`}
         tooltip="on"
+        tooltipPlacement="top"
         variant="primary"
       />
-      <span className={styles.left}>very unpleasant</span>
-      <span className={styles.centerSlid}>neutral</span>
-      <span className={styles.right}>very pleasant</span>
+      <span className={styles.alignleft}>very unpleasant</span>
+      <span className={styles.aligncenter}>neutral</span>
+      <span className={styles.alignright}>very pleasant</span>
     </div>
   );
 };
@@ -89,11 +93,12 @@ export const ExampleArou = () => {
         }}
         tooltipLabel={(currentValue) => `${currentValue}`}
         tooltip="on"
+        tooltipPlacement="top"
         variant="warning"
       />
-      <span className={styles.left}>very sleepy</span>
-      <span className={styles.centerSlid}>neutral</span>
-      <span className={styles.right}>very awake</span>
+      <span className={styles.alignleft}>very sleepy</span>
+      <span className={styles.aligncenter}>neutral</span>
+      <span className={styles.alignright}>very awake</span>
     </div>
   );
 };
