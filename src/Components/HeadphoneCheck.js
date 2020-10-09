@@ -518,7 +518,7 @@ class HeadphoneCheck extends React.Component {
   resetSounds() {
     var quizSounds = this.state.quizSounds;
     var quizAns = this.state.quizAns;
-    var varPlayColour = this.statevar.PlayColour;
+    var varPlayColour = this.state.PlayColour;
 
     shuffleSingle(varPlayColour);
     shuffleDouble(quizSounds, quizAns);
