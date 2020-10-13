@@ -399,14 +399,22 @@ class AudioPilot extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   callbackAver(callBackValue) {
     this.setState({ averRating: callBackValue });
-    if (this.state.averRating !== null && this.state.arouRating !== null) {
+    if (
+      this.state.averRating !== null &&
+      this.state.arouRating !== null &&
+      this.state.playNum > 0
+    ) {
       this.setState({ btnDisNext: false });
     }
   }
 
   callbackArou(callBackValue) {
     this.setState({ arouRating: callBackValue });
-    if (this.state.averRating !== null && this.state.arouRating !== null) {
+    if (
+      this.state.averRating !== null &&
+      this.state.arouRating !== null &&
+      this.state.playNum > 0
+    ) {
       this.setState({ btnDisNext: false });
     }
   }
@@ -517,8 +525,8 @@ class AudioPilot extends React.Component {
           </label>
           <br /> <br />
           <span className={styles.smallfont}>
-            [Note: You must <strong>drag</strong> (not click) all sliders at
-            least once to click NEXT.]
+            [Note: You must play the sound and <strong>drag</strong> (not click)
+            all sliders at least once to click NEXT.]
           </span>
           <br />
           <br />

@@ -54,13 +54,14 @@ class Questionnaires extends Component {
     super(props);
 
     const userID = this.props.location.state.userID;
+    var currTime = Math.round(performance.now());
 
     this.state = {
       userID: userID,
       resultAsString: {},
       currentquiz: false,
-      qnStart: 0,
-      qnTime: 0,
+      qnStart: currTime,
+      qnTime: currTime,
       qnTotal: 3,
       quizLabel: ["OCIR", "STAI_Y2", "STAI_Y1"],
       qnText1: [],
@@ -112,9 +113,9 @@ class Questionnaires extends Component {
   }
 
   startQuiz() {
-    var currTime = Math.round(performance.now());
-
-    this.setState({ currentquiz: true, qnStart: currTime, qnTime: currTime });
+    // var currTime = Math.round(performance.now());
+    //
+    // this.setState({ currentquiz: true, qnStart: currTime, qnTime: currTime });
     setTimeout(
       function () {
         this.shuffleQn();
