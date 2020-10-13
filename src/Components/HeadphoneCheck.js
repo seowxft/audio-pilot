@@ -251,7 +251,7 @@ class HeadphoneCheck extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   display_question(qnNum) {
     //comment this out after debuging, it will make sure that you can only cont when after you play the sound
-    document.addEventListener("keydown", this._handleKeyDownNumbers);
+    //document.addEventListener("keydown", this._handleKeyDownNumbers);
     var audioBite = this.state.quizSounds[qnNum - 1];
 
     return (
