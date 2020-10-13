@@ -308,12 +308,12 @@ class AudioPilot extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   // for audio bites
   togglePlaying() {
+    var playNum = this.state.playNum;
     if (this.state.active === false) {
-      var playNum = this.state.playNum + 1;
-      this.setState({ playNum: playNum });
+      playNum++;
     }
 
-    this.setState({ active: !this.state.active });
+    this.setState({ active: !this.state.active, playNum: playNum });
   }
   // for tones
   handleClick = () => {
