@@ -116,7 +116,7 @@ class Questionnaires extends Component {
   startQuiz() {
     // var currTime = Math.round(performance.now());
     //
-    // this.setState({ currentquiz: true, qnStart: currTime, qnTime: currTime });
+    this.setState({ currentquiz: true });
     setTimeout(
       function () {
         this.shuffleQn();
