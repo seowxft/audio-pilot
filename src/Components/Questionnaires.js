@@ -53,7 +53,8 @@ class Questionnaires extends Component {
   constructor(props) {
     super(props);
 
-    const userID = this.props.location.state.userID;
+    //  const userID = this.props.location.state.userID;
+    const userID = 10000;
     var currTime = Math.round(performance.now());
 
     this.state = {
@@ -69,8 +70,8 @@ class Questionnaires extends Component {
       qnText3: [],
     };
 
-    this.onComplete = this.onComplete.bind(this);
-    this.startQuiz = this.startQuiz.bind(this);
+    // this.onComplete = this.onComplete.bind(this);
+    // this.startQuiz = this.startQuiz.bind(this);
     //  this.shuffleQn = this.shuffleQn.bind(this);
   }
 
@@ -398,7 +399,7 @@ class Questionnaires extends Component {
               <Button
                 id="right"
                 className={styles.clc}
-                onClick={this.startQuiz}
+                onClick={this.startQuiz.bind(this)}
               >
                 START
               </Button>
@@ -431,7 +432,7 @@ class Questionnaires extends Component {
           <Survey.Survey
             json={json}
             css={myCss}
-            onComplete={this.onComplete}
+            onComplete={this.onComplete.bind(this)}
             onCurrentPageChanged={this.timerCallback.bind(this)}
           />
         </div>
