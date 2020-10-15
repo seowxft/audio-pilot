@@ -278,8 +278,8 @@ class AudioFreq extends React.Component {
             onStop={this.handleToneStop}
           />
           <br />
-          Using the slider below, adjust it (left and right) until you can only{" "}
-          <strong>just</strong> hear the tone comfortably.
+          Using the slider below, adjust the pitch (left and right) until you
+          can only <strong>just</strong> hear the tone.
           <br />
           You can play the tone as many times as you like.
         </p>
@@ -498,7 +498,7 @@ class AudioFreq extends React.Component {
             In this first section, we will present you with a tone.
             <br />
             <br />
-            All you have to do is to adjust its freqency until you can{" "}
+            All you have to do is to adjust its frequency until you can{" "}
             <strong>just</strong> hear it.
             <br />
             <br />

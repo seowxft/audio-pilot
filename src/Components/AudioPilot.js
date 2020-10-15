@@ -741,7 +741,7 @@ class AudioPilot extends React.Component {
               </span>
               <br />
               When you are asked to rate the sound on the:
-              <br /> <br />{" "}
+              <br /> <br />
               <span className={styles.centerTwo}>
                 <strong>Pleasantness</strong> scale
               </span>
@@ -882,7 +882,7 @@ class AudioPilot extends React.Component {
           </div>
         );
       } else {
-        this.redirectToTarget();
+        this.redirectToTarget.bind(this);
       }
     }
     return <div>{text}</div>;
