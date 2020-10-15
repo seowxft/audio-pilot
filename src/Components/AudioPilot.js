@@ -600,65 +600,74 @@ class AudioPilot extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   quizNext() {
     var qnNum = this.state.qnNum + 1;
-    var qnTime = Math.round(performance.now()); //for the next question
-
-    var qnNumTotalIndex = this.state.qnNumTotalIndex;
-    var soundIndex = qnNumTotalIndex[qnNum - 1];
-    var freqnIndex = this.state.freqnIndex;
-    var soundbite = this.state.sounds[soundIndex];
-    var volume = this.state.soundVol[soundIndex];
-    var volumePer = this.state.soundVolPer[soundIndex];
-
-    console.log("soundIndex: " + soundIndex);
-    console.log("volume: " + volume);
-    console.log("volumePer: " + volumePer);
-
-    this.useEffect();
-
-    if (freqnIndex.includes(soundIndex)) {
-      var freqArrayIdx = freqnIndex.indexOf(soundIndex);
-      var freqSounds = this.state.freqSounds[freqArrayIdx];
-      //if it is a frequencysound
-
-      console.log("freqnIndex: " + freqnIndex);
-      console.log("freqArrayIdx: " + freqArrayIdx);
-      console.log("freqSounds: " + this.state.freqSounds);
-      console.log("freqSoundsIndiv: " + freqSounds);
-
-      this.setState({
-        qnNum: qnNum,
-        qnTime: qnTime,
-        soundIndex: soundIndex,
-        freqFocus: freqSounds,
-        volume: volume,
-        volumePer: volumePer,
-        playNum: 0,
-        averRating: null,
-        arouRating: null,
-        checkBox: false,
-        btnDisNext: true,
-        btnDisTone: false,
-        active: false,
-        soundFocus: null,
-      });
+    if (qnNum > this.state.qnNumTotal) {
+      setTimeout(
+        function () {
+          this.redirectToTarget();
+        }.bind(this),
+        0
+      );
     } else {
-      console.log("soundbite: " + soundbite);
-      this.setState({
-        qnNum: qnNum,
-        qnTime: qnTime,
-        soundIndex: soundIndex,
-        freqFocus: null,
-        volume: volume,
-        volumePer: volumePer,
-        playNum: 0,
-        averRating: null,
-        arouRating: null,
-        checkBox: false,
-        btnDisNext: true,
-        btnDisTone: false,
-        active: false,
-        soundFocus: soundbite,
-      });
+      var qnTime = Math.round(performance.now()); //for the next question
+
+      var qnNumTotalIndex = this.state.qnNumTotalIndex;
+      var soundIndex = qnNumTotalIndex[qnNum - 1];
+      var freqnIndex = this.state.freqnIndex;
+      var soundbite = this.state.sounds[soundIndex];
+      var volume = this.state.soundVol[soundIndex];
+      var volumePer = this.state.soundVolPer[soundIndex];
+
+      console.log("soundIndex: " + soundIndex);
+      console.log("volume: " + volume);
+      console.log("volumePer: " + volumePer);
+
+      this.useEffect();
+
+      if (freqnIndex.includes(soundIndex)) {
+        var freqArrayIdx = freqnIndex.indexOf(soundIndex);
+        var freqSounds = this.state.freqSounds[freqArrayIdx];
+        //if it is a frequencysound
+
+        console.log("freqnIndex: " + freqnIndex);
+        console.log("freqArrayIdx: " + freqArrayIdx);
+        console.log("freqSounds: " + this.state.freqSounds);
+        console.log("freqSoundsIndiv: " + freqSounds);
+
+        this.setState({
+          qnNum: qnNum,
+          qnTime: qnTime,
+          soundIndex: soundIndex,
+          freqFocus: freqSounds,
+          volume: volume,
+          volumePer: volumePer,
+          playNum: 0,
+          averRating: null,
+          arouRating: null,
+          checkBox: false,
+          btnDisNext: true,
+          btnDisTone: false,
+          active: false,
+          soundFocus: null,
+        });
+      } else {
+        console.log("soundbite: " + soundbite);
+        this.setState({
+          qnNum: qnNum,
+          qnTime: qnTime,
+          soundIndex: soundIndex,
+          freqFocus: null,
+          volume: volume,
+          volumePer: volumePer,
+          playNum: 0,
+          averRating: null,
+          arouRating: null,
+          checkBox: false,
+          btnDisNext: true,
+          btnDisTone: false,
+          active: false,
+          soundFocus: soundbite,
+        });
+      }
     }
   }
 
@@ -882,6 +891,7 @@ class AudioPilot extends React.Component {
           </div>
         );
       } else {
+        //for some reason this doesn't work
         this.redirectToTarget.bind(this);
       }
     }
