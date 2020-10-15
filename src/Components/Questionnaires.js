@@ -53,8 +53,8 @@ class Questionnaires extends Component {
   constructor(props) {
     super(props);
 
-    //  const userID = this.props.location.state.userID;
-    const userID = 10000;
+    const userID = this.props.location.state.userID;
+
     var currTime = Math.round(performance.now());
 
     this.state = {
