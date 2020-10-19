@@ -537,7 +537,7 @@ class AudioPilot extends React.Component {
             onClick={this.saveData.bind(this)}
           >
             NEXT
-          </Button>{" "}
+          </Button>
         </span>
       </div>
     );
