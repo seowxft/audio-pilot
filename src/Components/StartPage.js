@@ -95,7 +95,7 @@ class StartPage extends React.Component {
               type: "html",
               name: "info",
               html:
-                "<p> Adults (aged 18 years or over) who have no auditory issues, especially Tinnitus. </p> If you take part in this study, you confirm that you meet the eligibity criteria.",
+                "<p> Adults (aged 18 years to 40 years old). <br/>No auditory issues, including: <br/> History of hearing/auditory problems (e.g. hearing loss). <br/>Tinnitus (present or past). <br/>Hearing sensitivity. <br/>Hearing loss <br/>Use of hearing aid.  <br/><br/>If you take part in this study, you confirm that you meet the eligibity criteria.</p>",
             },
 
             {
@@ -108,7 +108,7 @@ class StartPage extends React.Component {
               type: "html",
               name: "info",
               html:
-                "<p> You will play one or more online computer tasks, which will last around approximately 20 mins. <br/><br/>You will receive brief, unpleasant noises during some parts of the computer task(s). Before the start of the computer task, the volume of the noises will be adjusted to a level that is loud but that you are able to tolerate comfortably. This is in order to find a level that is appropriate for the experiment. We will not play any unpleasant noises that are more intense than you are comfortable with. <br/><br/>You will also be asked some questions about yourself, your feelings, background, attitudes and behaviour in your everyday life. <br/><br/>You will receive 2.75 GBP ( a rate of 8.25 GBP per hour) for helping us. <br/><br/>Remember, you are free to withdraw at any time without giving a reason.</p>",
+                "<p> You will play one or more online computer tasks, which will last around approximately 30 mins. <br/><br/>You will receive brief, unpleasant noises during some parts of the computer task(s). Before the start of the computer task, the volume of the noises will be adjusted to a level that is loud but that you are able to tolerate comfortably. This is in order to find a level that is appropriate for the experiment. We will not play any unpleasant noises that are more intense than you are comfortable with. <br/><br/>You will also be asked some questions about yourself, your feelings, background, attitudes and behaviour in your everyday life. <br/><br/>You will receive 4.15 GBP for helping us. <br/><br/>Remember, you are free to withdraw at any time without giving a reason.</p>",
             },
 
             {
@@ -186,7 +186,7 @@ class StartPage extends React.Component {
               type: "checkbox",
               name: "checkbox3",
               title:
-                "I consent to being re-contacted for the purposes of this research study.",
+                "I understand that my anonymised personal data can be shared with others for future research, shared in public databases and in scientific reports.",
               isRequired: true,
               choices: ["Yes"],
             },
@@ -195,7 +195,7 @@ class StartPage extends React.Component {
               type: "checkbox",
               name: "checkbox4",
               title:
-                "I understand that my anonymised personal data can be shared with others for future research, shared in public databases and in scientific reports.",
+                "I understand that I am free to withdraw from this study at any time without giving a reason and this will not affect my future medical care or legal rights.",
               isRequired: true,
               choices: ["Yes"],
             },
@@ -204,7 +204,7 @@ class StartPage extends React.Component {
               type: "checkbox",
               name: "checkbox5",
               title:
-                "I understand that I am free to withdraw from this study at any time without giving a reason and this will not affect my future medical care or legal rights.",
+                "I understand the potential benefits and risks of participating, the support available to me should I become distressed during the research, and who to contact if I wish to lodge a complaint.",
               isRequired: true,
               choices: ["Yes"],
             },
@@ -213,15 +213,6 @@ class StartPage extends React.Component {
               type: "checkbox",
               name: "checkbox6",
               title:
-                "I understand the potential benefits and risks of participating, the support available to me should I become distressed during the research, and who to contact if I wish to lodge a complaint.",
-              isRequired: true,
-              choices: ["Yes"],
-            },
-
-            {
-              type: "checkbox",
-              name: "checkbox7",
-              title:
                 "I understand the inclusion and exclusion criteria in the Information Sheet and as explained to me by the researcher.  I confirm that I do not fall under the exclusion criteria.",
               isRequired: true,
               choices: ["Yes"],
@@ -229,7 +220,7 @@ class StartPage extends React.Component {
 
             {
               type: "checkbox",
-              name: "checkbox8",
+              name: "checkbox7",
               title:
                 "I agree that the research project named above has been explained to me to my satisfaction and I agree to take part in this study.",
               isRequired: true,
