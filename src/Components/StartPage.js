@@ -9,8 +9,6 @@ class StartPage extends React.Component {
     super(props);
 
     // Get data and time
-    var dateTime = new Date().toLocaleString();
-
     var currentDate = new Date(); // maybe change to local
     var date = currentDate.getDate();
     var month = currentDate.getMonth(); //Be careful! January is 0 not 1
@@ -18,15 +16,23 @@ class StartPage extends React.Component {
     var dateString = date + "-" + (month + 1) + "-" + year;
     var timeString = currentDate.toTimeString();
 
+    // Get prolific_id
+
+    let url = this.props.location.search;
+    let params = queryString.parse(url);
+    const prolific_id =
+      params["PROLIFIC_PID"] === undefined
+        ? "undefined"
+        : params["PROLIFIC_PID"];
+
     // Gen a random 6 digit number for now
-    var userID = Math.floor(100000 + Math.random() * 900000);
+    //var userID = Math.floor(100000 + Math.random() * 900000);
     //var userID = 100000; //for testing
 
     // Set state
     this.state = {
-      userID: userID,
+      userID: prolific_id,
       date: dateString,
-      dateTime: dateTime,
       startTime: timeString,
       consentComplete: 0,
     };
@@ -47,6 +53,8 @@ class StartPage extends React.Component {
       pathname: `/HeadphoneCheck`,
       state: {
         userID: this.state.userID,
+        date: this.state.date,
+        startTime: this.state.startTime,
       },
     });
   }

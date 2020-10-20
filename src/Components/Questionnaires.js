@@ -54,11 +54,15 @@ class Questionnaires extends Component {
     super(props);
 
     const userID = this.props.location.state.userID;
+    const date = this.props.location.state.date;
+    const startTime = this.props.location.state.startTime;
 
     var currTime = Math.round(performance.now());
 
     this.state = {
       userID: userID,
+      date: date,
+      startTime: startTime,
       resultAsString: {},
       currentquiz: false,
       qnStart: currTime,
@@ -83,6 +87,8 @@ class Questionnaires extends Component {
     var qnEnd = Math.round(performance.now());
     var userID = this.state.userID;
     survey.setValue("userID", userID);
+    survey.setValue("date", this.state.date);
+    survey.setValue("startTime", this.state.startTime);
     survey.setValue("qnTimeStart", this.state.qnStart);
     survey.setValue("qnTimeEnd", qnEnd);
 

@@ -81,6 +81,9 @@ class HeadphoneCheck extends React.Component {
     super(props);
     // Constructor and props
     const userID = this.props.location.state.userID;
+    const date = this.props.location.state.date;
+    const startTime = this.props.location.state.startTime;
+
     var quizSounds = [
       audioCheck1,
       audioCheck2,
@@ -112,6 +115,9 @@ class HeadphoneCheck extends React.Component {
     ////////////////////////////////////////////////////////////////////////////////
     this.state = {
       userID: userID,
+      date: date,
+      startTime: startTime,
+
       checkStage: 1,
       currentInstructionText: 1,
       quizScreen: false,
@@ -370,6 +376,8 @@ class HeadphoneCheck extends React.Component {
     if (this.state.checkStage === 1) {
       quizbehaviour = {
         userID: this.state.userID,
+        date: this.state.date,
+        startTime: this.state.startTime,
         checkTry: this.state.checkTry,
         checkStage: this.state.checkStage,
         qnTime: this.state.qnTime,
@@ -554,6 +562,8 @@ class HeadphoneCheck extends React.Component {
       pathname: `/AudioFreq`,
       state: {
         userID: this.state.userID,
+        date: this.state.date,
+        startTime: this.state.startTime,
         volume: this.state.volume,
         volumeNotLog: this.state.volumeNotLog,
       },

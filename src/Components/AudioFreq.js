@@ -55,6 +55,8 @@ class AudioFreq extends React.Component {
     super(props);
 
     const userID = this.props.location.state.userID;
+    const date = this.props.location.state.date;
+    const startTime = this.props.location.state.startTime;
     const volume = this.props.location.state.volume;
     const volumeNotLog = this.props.location.state.volumeNotLog;
     // var currentDate = new Date();
@@ -71,6 +73,8 @@ class AudioFreq extends React.Component {
     ////////////////////////////////////////////////////////////////////////////////
     this.state = {
       userID: userID,
+      date: date,
+      startTime: startTime,
       volume: volume,
       volumeNotLog: volumeNotLog,
       toneVol: toneVol,
@@ -418,6 +422,8 @@ class AudioFreq extends React.Component {
 
     let quizbehaviour = {
       userID: this.state.userID,
+      date: this.state.date,
+      startTime: this.state.startTime,
       qnTime: this.state.qnTime,
       qnRT: qnRT,
       qnNum: this.state.qnNum,
@@ -472,6 +478,8 @@ class AudioFreq extends React.Component {
       pathname: `/AudioPilot`,
       state: {
         userID: this.state.userID,
+        date: this.state.date,
+        startTime: this.state.startTime,
         volume: this.state.volume,
         volumeNotLog: this.state.volumeNotLog,
         sliderFreq: this.state.sliderFreq,
