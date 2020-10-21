@@ -111,11 +111,11 @@ class AudioPilot extends React.Component {
     var volumeHalf = logslider(volumeNotLog / 2, 1, 100);
     var volumeToneHalf = volumeHalf / 100;
 
-    console.log("volumeNotLog: " + volumeNotLog);
-    console.log("volume: " + volume);
-    console.log("volumeTone: " + volumeTone);
-    console.log("volumeHalf: " + volumeHalf);
-    console.log("volumeToneHalf: " + volumeToneHalf);
+    // console.log("volumeNotLog: " + volumeNotLog);
+    // console.log("volume: " + volume);
+    // console.log("volumeTone: " + volumeTone);
+    // console.log("volumeHalf: " + volumeHalf);
+    // console.log("volumeToneHalf: " + volumeToneHalf);
 
     var varPlayColourTemp = [
       "#d02f33",
@@ -211,9 +211,9 @@ class AudioPilot extends React.Component {
     var sliderFreq3Temp = logposition(sliderFreq, 1000, sliderFreq) * 0.5;
     var sliderFreq3 = logslider(sliderFreq3Temp, 1000, sliderFreq);
 
-    console.log("sliderFreq: " + sliderFreq);
-    console.log("sliderFreq2: " + sliderFreq2);
-    console.log("sliderFreq3: " + sliderFreq3);
+    // console.log("sliderFreq: " + sliderFreq);
+    // console.log("sliderFreq2: " + sliderFreq2);
+    // console.log("sliderFreq3: " + sliderFreq3);
 
     var sliderKey = Array.from(Array(qnNumTotal * 2).keys());
 
@@ -348,7 +348,7 @@ class AudioPilot extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   start_quest() {
     var currTime = Math.round(performance.now());
-    console.log("soundVolPer: " + this.state.soundVolPer);
+    // console.log("soundVolPer: " + this.state.soundVolPer);
     //get index of sound1
     var qnNumTotalIndex = this.state.qnNumTotalIndex;
     var soundIndex = qnNumTotalIndex[0];
@@ -357,18 +357,18 @@ class AudioPilot extends React.Component {
     var volumePer = this.state.soundVolPer[soundIndex];
     var soundbite = this.state.sounds[soundIndex];
 
-    console.log("soundIndex: " + soundIndex);
-    console.log("volume: " + volume);
-    console.log("volumePer: " + volumePer);
-    console.log("freqSoundsAll: " + this.state.freqSounds);
-    console.log("soundVolPer: " + this.state.soundVolPer);
+    // console.log("soundIndex: " + soundIndex);
+    // console.log("volume: " + volume);
+    // console.log("volumePer: " + volumePer);
+    // console.log("freqSoundsAll: " + this.state.freqSounds);
+    // console.log("soundVolPer: " + this.state.soundVolPer);
 
     if (freqnIndex.includes(soundIndex)) {
       var freqArrayIdx = freqnIndex.indexOf(soundIndex);
       var freqSounds = this.state.freqSounds[freqArrayIdx];
-      console.log("freqnIndex: " + freqnIndex);
-      console.log("freqArrayIdx: " + freqArrayIdx);
-      console.log("freqSounds: " + freqSounds);
+      // console.log("freqnIndex: " + freqnIndex);
+      // console.log("freqArrayIdx: " + freqArrayIdx);
+      // console.log("freqSounds: " + freqSounds);
       //if it includes, then it is a frequency noise to be played
       this.setState({
         quizScreen: true,
@@ -382,7 +382,7 @@ class AudioPilot extends React.Component {
         soundFocus: null,
       });
     } else {
-      console.log("soundbite: " + soundbite);
+      // console.log("soundbite: " + soundbite);
       this.setState({
         quizScreen: true,
         qnTime: currTime,
@@ -588,7 +588,7 @@ class AudioPilot extends React.Component {
       body: JSON.stringify(quizbehaviour),
     });
 
-    console.log(quizbehaviour);
+    // console.log(quizbehaviour);
 
     //lag a bit to make sure statestate is saved
     setTimeout(
@@ -621,9 +621,9 @@ class AudioPilot extends React.Component {
       var volume = this.state.soundVol[soundIndex];
       var volumePer = this.state.soundVolPer[soundIndex];
 
-      console.log("soundIndex: " + soundIndex);
-      console.log("volume: " + volume);
-      console.log("volumePer: " + volumePer);
+      // console.log("soundIndex: " + soundIndex);
+      // console.log("volume: " + volume);
+      // console.log("volumePer: " + volumePer);
 
       this.useEffect();
 
@@ -632,10 +632,10 @@ class AudioPilot extends React.Component {
         var freqSounds = this.state.freqSounds[freqArrayIdx];
         //if it is a frequencysound
 
-        console.log("freqnIndex: " + freqnIndex);
-        console.log("freqArrayIdx: " + freqArrayIdx);
-        console.log("freqSounds: " + this.state.freqSounds);
-        console.log("freqSoundsIndiv: " + freqSounds);
+        // console.log("freqnIndex: " + freqnIndex);
+        // console.log("freqArrayIdx: " + freqArrayIdx);
+        // console.log("freqSounds: " + this.state.freqSounds);
+        // console.log("freqSoundsIndiv: " + freqSounds);
 
         this.setState({
           qnNum: qnNum,
@@ -654,7 +654,7 @@ class AudioPilot extends React.Component {
           soundFocus: null,
         });
       } else {
-        console.log("soundbite: " + soundbite);
+        // console.log("soundbite: " + soundbite);
         this.setState({
           qnNum: qnNum,
           qnTime: qnTime,

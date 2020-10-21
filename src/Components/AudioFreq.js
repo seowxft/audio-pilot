@@ -62,8 +62,8 @@ class AudioFreq extends React.Component {
     // var currentDate = new Date();
     var currTime = Math.round(performance.now());
 
-    console.log("Vol(Lg) from headphone: " + volume);
-    console.log("Vol(nLg) from headphone: " + volumeNotLog);
+    // console.log("Vol(Lg) from headphone: " + volume);
+    // console.log("Vol(nLg) from headphone: " + volumeNotLog);
 
     //React-tone.js is between 0 (silent) and 1 (full) for volume
     var toneVol = volume / 100;
@@ -188,10 +188,10 @@ class AudioFreq extends React.Component {
 
     var sliderFreq = logslider(sliderFreqPos, sliderFreqSlidMin, 22000);
 
-    console.log("qnNum: " + qnNum);
-    console.log("sliderFreqPos: " + sliderFreqPos);
-    console.log("sliderFreq: " + sliderFreq);
-    console.log("sliderFreqSlidMin: " + sliderFreqSlidMin);
+    // console.log("qnNum: " + qnNum);
+    // console.log("sliderFreqPos: " + sliderFreqPos);
+    // console.log("sliderFreq: " + sliderFreq);
+    // console.log("sliderFreqSlidMin: " + sliderFreqSlidMin);
 
     this.setState({
       qnNum: qnNum,
@@ -411,8 +411,8 @@ class AudioFreq extends React.Component {
     var freqThresIndiv = this.state.sliderFreq;
     var userID = this.state.userID;
 
-    console.log("Qn Num: " + this.state.qnNum);
-    console.log("Freq Thres: " + freqThres);
+    // console.log("Qn Num: " + this.state.qnNum);
+    // console.log("Freq Thres: " + freqThres);
 
     this.setState({
       qnRT: qnRT,

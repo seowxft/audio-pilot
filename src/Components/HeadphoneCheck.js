@@ -194,7 +194,7 @@ class HeadphoneCheck extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   start_quest() {
     var currTime = Math.round(performance.now());
-    console.log("quizAns: " + this.state.quizAns);
+    // console.log("quizAns: " + this.state.quizAns);
 
     this.setState({
       quizScreen: true,
@@ -210,8 +210,8 @@ class HeadphoneCheck extends React.Component {
   //Toggle audio playing
   ////////////////////////////////////////////////////////////////////////////////
   togglePlaying() {
-    console.log("PlayNum :" + this.state.playNum);
-    console.log("Playing :" + this.state.active);
+    // console.log("PlayNum :" + this.state.playNum);
+    // console.log("Playing :" + this.state.active);
 
     if (this.state.playOnceOnly === true) {
       //if this is a section where playOnceOnly happens then
@@ -242,14 +242,14 @@ class HeadphoneCheck extends React.Component {
     }
 
     this.setState({ volume: volume });
-    console.log("Vol in Log: " + volume);
+    // console.log("Vol in Log: " + volume);
   }
 
   callbackVolNotLog(callBackValueNotLog) {
     var volumeNotLog = callBackValueNotLog;
 
     this.setState({ volumeNotLog: volumeNotLog });
-    console.log("vol not in Log: " + volumeNotLog);
+    // console.log("vol not in Log: " + volumeNotLog);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -342,8 +342,8 @@ class HeadphoneCheck extends React.Component {
       qnCorrIndiv = 0;
     }
 
-    console.log("Qn correct: " + qnCorr);
-    console.log("Total quiz score: " + quizSum);
+    // console.log("Qn correct: " + qnCorr);
+    // console.log("Total quiz score: " + quizSum);
     qnPressKey = pressed;
 
     quizPer = (qnNum / qnNumTotal) * 100;
@@ -400,7 +400,7 @@ class HeadphoneCheck extends React.Component {
         body: JSON.stringify(quizbehaviour),
       });
 
-      console.log(quizbehaviour);
+      // console.log(quizbehaviour);
 
       setTimeout(
         function () {
@@ -435,7 +435,7 @@ class HeadphoneCheck extends React.Component {
         body: JSON.stringify(quizbehaviour),
       });
 
-      console.log(quizbehaviour);
+      // console.log(quizbehaviour);
 
       setTimeout(
         function () {

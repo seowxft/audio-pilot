@@ -97,7 +97,7 @@ class Questionnaires extends Component {
 
     var resultAsString = JSON.stringify(survey.data);
 
-    console.log("resultAsString", resultAsString);
+    // console.log("resultAsString", resultAsString);
 
     fetch(`${DATABASE_URL}/psych_quiz/` + userID, {
       method: "POST",
@@ -111,8 +111,8 @@ class Questionnaires extends Component {
     this.setState({
       resultAsString: resultAsString,
     });
-    console.log("userID: " + userID);
-    console.log("Survey results: " + JSON.stringify(survey.data));
+    // console.log("userID: " + userID);
+    // console.log("Survey results: " + JSON.stringify(survey.data));
 
     setTimeout(
       function () {

@@ -25,7 +25,8 @@ class StartPage extends React.Component {
       params["PROLIFIC_PID"] === undefined
         ? "undefined"
         : params["PROLIFIC_PID"];
-    console.log(prolific_id);
+    console.log("Prolific ID: " + prolific_id);
+
     // Gen a random 6 digit number for now
     //var userID = Math.floor(100000 + Math.random() * 900000);
     //var userID = 100000; //for testing
