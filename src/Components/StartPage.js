@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import * as Survey from "survey-react";
 import "../../node_modules/survey-react/survey.css";
 import "./style/startPage.css";
+import queryString from "query-string";
 
 class StartPage extends React.Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class StartPage extends React.Component {
       params["PROLIFIC_PID"] === undefined
         ? "undefined"
         : params["PROLIFIC_PID"];
-
+    console.log(prolific_id);
     // Gen a random 6 digit number for now
     //var userID = Math.floor(100000 + Math.random() * 900000);
     //var userID = 100000; //for testing
@@ -77,7 +78,7 @@ class StartPage extends React.Component {
               type: "html",
               name: "info",
               html:
-                "<p>This research is being conducted by the Wellcome Centre for Human Neuroimaging and the Max Planck UCL Centre for Computational Psychiatry and Ageing Research. The lead researchers for this project are Dr. Tricia Seow (t.seow@ucl.ac.uk) and Dr. Tobias Hauser (t.hauser@ucl.ac.uk). This study has been approved by the UCL Research Ethics Committee (project ID number 15301&#92;001) and funded by the Wellcome Trust.</p>",
+                "<p>This research is being conducted by the Wellcome Centre for Human Neuroimaging and the Max Planck UCL Centre for Computational Psychiatry and Ageing Research. The lead researchers for this project are Dr. Tricia Seow (Research Fellow, t.seow@ucl.ac.uk) and Dr. Tobias Hauser (Principal Investigator, t.hauser@ucl.ac.uk). This study has been approved by the UCL Research Ethics Committee (project ID number 15301&#92;001) and funded by the Wellcome Trust.</p>",
             },
 
             {
@@ -103,7 +104,7 @@ class StartPage extends React.Component {
               type: "html",
               name: "info",
               html:
-                "<p> Adults (aged 18 years to 40 years old). <br/>No auditory issues, including: <br/> History of hearing/auditory problems (e.g. hearing loss). <br/>Tinnitus (present or past). <br/>Hearing sensitivity. <br/>Hearing loss <br/>Use of hearing aid.  <br/><br/>If you take part in this study, you confirm that you meet the eligibity criteria.</p>",
+                "<p>Adults aged between <strong>18 to 40 years old</strong> who have <strong>NO auditory/ear conditions</strong>, including: <ul><li>Personal history of or current Tinnitus</li><li>Personal history of or current hearing sensitivity (e.g. Hyperacusis)</li><li>Personal history of or current hearing loss</li><li>Personal history of or current use of hearing aid</li><li>Current ear infections/inflammation</li></ul>If you take part in this study, you confirm that you meet the eligibity criteria.</p>",
             },
 
             {
@@ -116,7 +117,7 @@ class StartPage extends React.Component {
               type: "html",
               name: "info",
               html:
-                "<p> You will play one or more online computer tasks, which will last around approximately 30 mins. <br/><br/>You will receive brief, unpleasant noises during some parts of the computer task(s). Before the start of the computer task, the volume of the noises will be adjusted to a level that is loud but that you are able to tolerate comfortably. This is in order to find a level that is appropriate for the experiment. We will not play any unpleasant noises that are more intense than you are comfortable with. <br/><br/>You will also be asked some questions about yourself, your feelings, background, attitudes and behaviour in your everyday life. <br/><br/>You will receive 4.15 GBP for helping us. <br/><br/>Remember, you are free to withdraw at any time without giving a reason.</p>",
+                "<p> You will play one or more online computer tasks, which will last around approximately <strong>30 mins</strong>. <br/><br/>You will receive brief, unpleasant noises during some parts of the computer task(s). Before the start of the computer task, the volume of the noises will be adjusted to a level that is loud but that you are able to tolerate comfortably. This is in order to find a level that is appropriate for the experiment. We will not play any unpleasant noises that are more intense than you are comfortable with. <br/><br/>You will also be asked some questions about yourself, your feelings, background, attitudes and behaviour in your everyday life. <br/><br/>You will receive <strong>4.15 GBP</strong> for helping us. <br/><br/>Remember, you are free to withdraw at any time without giving a reason.</p>",
             },
 
             {
@@ -165,7 +166,7 @@ class StartPage extends React.Component {
               type: "html",
               name: "info",
               html:
-                "<p>To help future research and make the best use of the research data you have given us (such as answers to questionnaires) we may keep your research data indefinitely and share these. The data we collect will be shared and held as follows:<ul><li> In publications, your data will be anonymised, so you cannot be identified. </li><li> In public databases, your data will be anonymised. </li><li> We do not collect any personal data that could be used to identify you. </li></ul> The legal basis used to process your personal data will be the provision of public task (this means that the research you are taking part in is deemed to be in the public interest). The legal basis used to process special category data (i.e. ethnicity) will be for scientific research purposes. We will follow the UCL and legal guidelines to safeguard your data. If you change your mind and withdraw your consent to participate in this study you can contact us via Prolific. However, we collect all data in an anonymised form, which is why this data cannot be destroyed, withdrawn or recalled. <br/><br/>If there are any queries or concerns please do not hesitate to contact Dr. Tricia Seow, t.seow@ucl.ac.uk.</p>",
+                "<p>This ‘local’ privacy notice sets out the information that applies to this particular study. Further information on how UCL uses participant information can be found in our ‘general’ privacy notice:<br/><br/>For participants in research studies, click <a href='https://www.ucl.ac.uk/legal-services/sites/legal-services/files/ucl_general_research_participant_privacy_notice_v1.pdf' target='_blank'>here</a>.<br/><br/>The information that is required to be provided to participants under data protection legislation (GDPR and DPA 2018) is provided across both the ‘local’ and ‘general’ privacy notices.<br/><br/>To help future research and make the best use of the research data you have given us (such as answers to questionnaires) we may keep your research data indefinitely and share these. The data we collect will be shared and held as follows:<ul><li> In publications, your data will be anonymised, so you cannot be identified. </li><li> In public databases, your data will be anonymised. </li><li>We do not collect any personal data that could be used to identify you. </li><li> Personal data is any information that could be used to identify you, such as your User ID. When we collect your data, your User ID will be replaced with a nonidentifiable random ID number. No personally identifying data will be stored.</li></ul>The legal basis used to process your personal data will be the provision of public task (this means that the research you are taking part in is deemed to be in the public interest). The legal basis used to process special category data (i.e. ethnicity) will be for scientific research purposes. We will follow the UCL and legal guidelines to safeguard your data. If you change your mind and withdraw your consent to participate in this study you can contact us via Prolific. However, we collect all data in an anonymised form, which is why this data cannot be destroyed, withdrawn or recalled. <br/><br/>If there are any queries or concerns please do not hesitate to contact Dr. Tricia Seow (t.seow@ucl.ac.uk).</p>",
             },
           ],
         },

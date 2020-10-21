@@ -9,7 +9,7 @@ class EndPage extends React.Component {
 
     const userID = this.props.location.state.userID;
     // var currentDate = new Date();
-    //  const userID = 1000;
+    //const userID = 1000;
 
     // This will change for the questionnaires going AFTER the main task
     this.state = {
@@ -45,14 +45,18 @@ class EndPage extends React.Component {
           <br />
           <br />
           In this task, we were interested in how you rate a variety of sounds.
-          Previous work has utilised various sounds in experimental tasks to
-          link differences in behaviour to psychiatric disorders, which we are
-          aiming to understand better. Thanks for your help!
+          <br />
+          Previous work have utilised various sounds in experimental tasks to
+          link differences in behaviour to psychiatric disorders, <br />
+          which we are aiming to understand better.
+          <br />
+          <br />
+          Thanks for your help!
           <br />
           <br />
           If you feel that completing the questionnaires on any of the
-          psychopathologies caused you any distress, please use the following
-          contact details for help and support.
+          psychopathologies caused you any distress, <br />
+          please use the following contact details for help and support.
           <br />
           <br />
           <i>Web pages</i>
@@ -83,7 +87,8 @@ class EndPage extends React.Component {
           <strong> National Suicide Prevention Lifeline:</strong> 1-800-273-8255
           <br />
           <br />
-          If you are ready to return to Prolific, click the button below.
+          If you are ready to return to Prolific, click the button below to
+          complete the session.
           <br />
           <br />
           <span className={styles.centerTwo}>
