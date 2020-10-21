@@ -26,7 +26,8 @@ class EndPage extends React.Component {
   redirectToEnd() {
     alert("You will now be redirected to the validation page.");
 
-    window.location = "https://app.prolific.co/submissions/complete?";
+    window.location =
+      "https://app.prolific.co/submissions/complete?cc=23D534D7";
   }
 
   render() {

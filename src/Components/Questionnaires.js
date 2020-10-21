@@ -53,6 +53,9 @@ class Questionnaires extends Component {
   constructor(props) {
     super(props);
 
+    // const userID = 10000;
+    // const date = 1000;
+    // const startTime = 1000;
     const userID = this.props.location.state.userID;
     const date = this.props.location.state.date;
     const startTime = this.props.location.state.startTime;
@@ -138,8 +141,13 @@ class Questionnaires extends Component {
 
   timerCallback(survey) {
     var page = survey.pages.indexOf(survey.currentPage);
+    let quizText;
+    if (page === 0) {
+      quizText = "demo";
+    } else {
+      quizText = this.state.quizLabel[page - 1];
+    }
 
-    var quizText = this.state.quizLabel[page];
     var valueName = "PgFinish_" + quizText;
     var valueName2 = "PgRT_" + quizText;
     var qnTime = Math.round(performance.now());
@@ -390,8 +398,9 @@ class Questionnaires extends Component {
             Good job!
             <br />
             <br />
-            For the last section, we would like you to complete{" "}
-            {this.state.qnTotal} questionnaires.
+            For the last section, we would like you to provide some demographic
+            information (age and gender) and complete {this.state.qnTotal}{" "}
+            questionnaires.
             <br />
             <br />
             Do read the instructions for each quiz, which will be positioned at
@@ -419,6 +428,50 @@ class Questionnaires extends Component {
         title: null,
         showProgressBar: "top",
         pages: [
+          {
+            questions: [
+              {
+                type: "dropdown",
+                name: "age",
+                title: "What is your age?",
+                isRequired: true,
+                colCount: 0,
+                choices: [
+                  "18",
+                  "19",
+                  "20",
+                  "21",
+                  "22",
+                  "23",
+                  "24",
+                  "25",
+                  "26",
+                  "27",
+                  "28",
+                  "29",
+                  "30",
+                  "31",
+                  "32",
+                  "33",
+                  "34",
+                  "35",
+                  "36",
+                  "37",
+                  "38",
+                  "39",
+                  "40",
+                ],
+              },
+              {
+                type: "dropdown",
+                name: "gender",
+                title: "What is your gender?",
+                isRequired: true,
+                colCount: 0,
+                choices: ["Female", "Male", "Other"],
+              },
+            ],
+          },
           {
             questions: [this.state.qnText1],
           },
