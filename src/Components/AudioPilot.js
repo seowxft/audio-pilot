@@ -696,7 +696,11 @@ class AudioPilot extends React.Component {
   redirectToTarget() {
     this.props.history.push({
       pathname: `/Questionnaires`,
-      state: { userID: this.state.userID, date.: this.state.date, startTime: this.state.startTime },
+      state: {
+        userID: this.state.userID,
+        date: this.state.date,
+        startTime: this.state.startTime,
+      },
     });
   }
 
