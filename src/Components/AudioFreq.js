@@ -514,7 +514,7 @@ class AudioFreq extends React.Component {
             <br />
             <br />
             Remember to keep your headphones on and do not adjust the sound
-            settings unless stated.
+            settings.
             <br />
             <br />
             Click <strong>START</strong> to begin.

@@ -411,6 +411,8 @@ class HeadphoneCheck extends React.Component {
     } else {
       quizbehaviour = {
         userID: this.state.userID,
+        date: this.state.date,
+        startTime: this.state.startTime,
         checkTry: this.state.checkTry,
         checkStage: this.state.checkStage,
         qnTime: this.state.qnTime,
