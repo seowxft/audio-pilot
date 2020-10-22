@@ -105,7 +105,7 @@ class StartPage extends React.Component {
               type: "html",
               name: "info",
               html:
-                "<p>Adults aged between <strong>18 to 40 years old</strong> who have <strong>normal hearing</strong>. This means that you need to have <strong>no history of auditory/hearing condition (current & past)</strong>, including: <ul><li>Personal history of or current Tinnitus</li><li>Personal history of or current hearing sensitivity (e.g. Hyperacusis)</li><li>Personal history of or current hearing loss</li><li>Personal history of or current use of hearing aid</li><li>Current ear infections/inflammation</li></ul> <br/><br/>If you take part in this study, you confirm that you meet the eligibity criteria.</p>",
+                "<p>Adults aged between <strong>18 to 40 years old</strong> who have <strong>normal hearing</strong>. This means that you need to have <strong>no history of auditory/hearing condition (current & past)</strong>, including: <ul><li>Personal history of or current Tinnitus</li><li>Personal history of or current hearing sensitivity (e.g. Hyperacusis)</li><li>Personal history of or current hearing loss</li><li>Personal history of or current use of hearing aid</li><li>Current ear infections/inflammation</li></ul>If you take part in this study, you confirm that you meet the eligibity criteria.</p>",
             },
 
             {
