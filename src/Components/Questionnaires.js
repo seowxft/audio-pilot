@@ -373,7 +373,7 @@ class Questionnaires extends Component {
     var allQuizText = [quiz1, quiz2, quiz3];
     var quizLabel = this.state.quizLabel;
 
-    shuffleSingle(shuffleDouble);
+    shuffleDouble(allQuizText, quizLabel);
 
     this.setState({
       qnText1: allQuizText[0],
