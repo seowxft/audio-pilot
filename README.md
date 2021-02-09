@@ -1,4 +1,4 @@
-## Pilot for audio bites
+## 'Reliability of web-based affective auditory stimulus presentation' task
 
 This web task includes
 
