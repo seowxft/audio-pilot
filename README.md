@@ -14,8 +14,7 @@ The web task includes:
 1. On localhost:
 
 - Download repository
-- In audio-pilot > package.json, ensure:
-  -- "scripts": { "start": "react-scripts start" }
+- In `audio-pilot > package.json`, ensure: `"scripts": { "start": "react-scripts start" }`
 - Install NPM (Node package manager) and Node.js.
 - Install Babel (JS compiler): `npm install babel-core babel-loader babel-preset-env babel-preset-react babel-webpack-plugin --save-dev`
 - Install React JS: `npm install -g create-react-app`
@@ -24,8 +23,7 @@ The web task includes:
 2. On web server:
 
 - Fork repository
-- In audio-pilot > package.json, ensure:
-  -- "scripts": { "start": "node server.js" }
+- In `audio-pilot > package.json`, ensure: `"scripts": { "start": "node server.js" }`
 - Use a Platform as a Service (PaaS) such as [Scalingo](https://scalingo.com/) to deploy with Github
 
-To include a database, modify DATABASE_URL in audio-pilot > src > Components > config.js
+To include a database, `modify DATABASE_URL` in `audio-pilot > src > Components > config.js`
