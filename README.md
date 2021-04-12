@@ -18,7 +18,8 @@ The web task includes:
 - Install NPM (Node package manager) and Node.js.
 - Install Babel (JS compiler): `npm install babel-core babel-loader babel-preset-env babel-preset-react babel-webpack-plugin --save-dev`
 - Install React JS: `npm install -g create-react-app`
-- To start React app, cd to project folder and run: `npm start`
+- To download React app dependencies, cd to project folder and run: `npm install`
+- To start React app, in project folder run: `npm start`
 
 2. On web server:
 
